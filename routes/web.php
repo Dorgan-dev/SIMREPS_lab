@@ -5,7 +5,7 @@ use App\Http\Controllers\ReservasiController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('guest.index');
+    return view('welcome');
 });
 
 Route::get('/dashboard', function () {
@@ -20,3 +20,5 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+Route::resource('/customers', CustomerController::class);
