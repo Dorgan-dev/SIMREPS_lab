@@ -1,0 +1,190 @@
+.dark-mode {
+    background-color: #151521 !important;
+    color: #c2c2d9 !important;
+}
+
+.dark-mode #main,
+.dark-mode #main-content {
+    background-color: #151521 !important;
+}
+
+.dark-mode .text-black,
+.dark-mode .text-dark,
+.dark-mode .form-group label,
+.dark-mode .page-heading h3,
+.dark-mode .card .card-header h4,
+.dark-mode h1, .dark-mode h2, .dark-mode h3,
+.dark-mode h4, .dark-mode h5, .dark-mode h6,
+.dark-mode p,
+.dark-mode span:not(.badge),
+.dark-mode div:not(.alert):not(.btn) {
+    color: #c2c2d9 !important;
+}
+
+.dark-mode [class*="text-gray-"],
+.dark-mode .text-muted {
+    color: #7c8db5 !important;
+}
+
+.dark-mode a {
+    color: #79aaff !important;
+}
+
+/* UNIVERSAL SCROLLBAR */
+.dark-mode::-webkit-scrollbar,
+.dark-mode #main::-webkit-scrollbar,
+.dark-mode .sidebar-wrapper::-webkit-scrollbar,
+.dark-mode .navbar::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+}
+.dark-mode::-webkit-scrollbar-track,
+.dark-mode #main::-webkit-scrollbar-track,
+.dark-mode .sidebar-wrapper::-webkit-scrollbar-track,
+.dark-mode .navbar::-webkit-scrollbar-track {
+    background: #151521 !important;
+}
+.dark-mode::-webkit-scrollbar-thumb,
+.dark-mode #main::-webkit-scrollbar-thumb,
+.dark-mode .sidebar-wrapper::-webkit-scrollbar-thumb,
+.dark-mode .navbar::-webkit-scrollbar-thumb {
+    background: #2a2a3b !important;
+    border-radius: 10px !important;
+}
+.dark-mode,
+.dark-mode #main,
+.dark-mode .sidebar-wrapper,
+.dark-mode .navbar {
+    scrollbar-width: thin !important;
+    scrollbar-color: #2a2a3b #151521 !important;
+}
+
+/* SIDEBAR & NAVBAR */
+.dark-mode .sidebar-wrapper,
+.dark-mode .navbar,
+.dark-mode .navbar-fixed {
+    background-color: #1e1e2d !important;
+}
+
+.dark-mode .navbar .nav-link,
+.dark-mode .navbar .dropdown > a,
+.dark-mode .navbar .user-menu span,
+.dark-mode .navbar .user-menu i {
+    color: #9899ac !important;
+}
+
+.dark-mode .navbar svg {
+    color: #9899ac !important;
+    fill: #9899ac !important;
+}
+
+.dark-mode .sidebar-wrapper .menu .sidebar-title {
+    color: #999 !important;
+}
+
+.dark-mode .sidebar-wrapper .menu .sidebar-link {
+    color: #9899ac !important;
+}
+
+.dark-mode .sidebar-wrapper .menu .sidebar-link:hover {
+    background-color: #282839 !important;
+    color: #c2c2d9 !important;
+}
+
+.dark-mode .sidebar-wrapper .menu .sidebar-item.active .sidebar-link {
+    background-color: #435ebe !important;
+}
+
+.dark-mode .sidebar-wrapper .menu .submenu .submenu-item a {
+    color: #9899ac !important;
+}
+
+.dark-mode .sidebar-wrapper .menu .submenu .submenu-item a:hover {
+    color: #c2c2d9 !important;
+}
+
+.dark-mode .theme-toggle {
+    color: #9899ac !important;
+}
+
+/* CARD / PANEL */
+.dark-mode .card {
+    background-color: #1e1e2d !important;
+    border: none !important;
+}
+
+.dark-mode .card .card-body,
+.dark-mode .card .card-header {
+    background-color: #1e1e2d !important;
+    color: #c2c2d9 !important;
+    border: none !important;
+}
+
+.dark-mode .card [class*="text-"],
+.dark-mode .profile-statistics *,
+.dark-mode .recent-messages * {
+    color: #c2c2d9 !important;
+}
+
+/* FORM & TABLE */
+.dark-mode .dataTable-input,
+.dark-mode .form-control {
+    background-color: #1b1b29 !important;
+    color: #c2c2d9 !important;
+    border: none !important;
+}
+
+.dark-mode .dataTable-table,
+.dark-mode .table {
+    color: #c2c2d9 !important;
+    border: none !important;
+}
+
+.dark-mode table th,
+.dark-mode table td {
+    border: none !important;
+}
+
+.dark-mode .table:not(.table-borderless) thead th {
+    border: none !important;
+    color: #c2c2d9 !important;
+}
+
+/* KOMPONEN EKSTERNAL */
+.dark-mode .apexcharts-text tspan,
+.dark-mode .apexcharts-legend-text * {
+    fill: #c2c2d9 !important;
+    color: #c2c2d9 !important;
+}
+
+.dark-mode .apexcharts-tooltip {
+    background: #1e1e2d !important;
+    color: #c2c2d9 !important;
+    border: none !important;
+}
+
+.dark-mode .swal2-popup,
+.dark-mode .swal2-validation-message,
+.dark-mode .swal2-title {
+    background-color: #1e1e2d !important;
+    color: #c2c2d9 !important;
+    border: none !important;
+}
+
+.dark-mode .note-editing-area .note-editable {
+    background-color: #1b1b29 !important;
+    color: #c2c2d9 !important;
+    border: none !important;
+}
+
+.dark-mode .alert-light {
+    background-color: #45455a !important;
+    color: #c2c2d9 !important;
+    border: none !important;
+}
+
+.dark-mode .toast {
+    background-color: rgba(30, 30, 45, 0.85) !important;
+    color: #c2c2d9 !important;
+    border: none !important;
+}

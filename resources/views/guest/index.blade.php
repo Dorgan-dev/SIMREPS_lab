@@ -1,364 +1,297 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('guest.layouts.app')
+@section('content')
+    <!-- Courses Hero Section -->
+    <section id="courses-hero" class="courses-hero section light-background">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UMKM Digital | Beranda</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+        <div class="hero-content">
+            <div class="container">
+                <div class="row align-items-center">
 
-        body {
-            background-color: #f9fafb;
-            color: #333;
-        }
+                    <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="hero-text">
+                            <h1>Sistem Informasi Manajemen dan Reservasi Playstation</h1>
+                            <p>Discover thousands of high-quality courses designed by industry professionals. Learn
+                                at your own pace, gain in-demand skills, and advance your career from anywhere in
+                                the world.
+                            </p>
+                            <div class="hero-stats">
+                                <div class="stat-item">
+                                    <span class="number purecounter" data-purecounter-start="0" data-purecounter-end="50000"
+                                        data-purecounter-duration="2"></span>
+                                    <span class="label">Students Enrolled</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="number purecounter" data-purecounter-start="0" data-purecounter-end="1200"
+                                        data-purecounter-duration="2"></span>
+                                    <span class="label">Expert Courses</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="number purecounter" data-purecounter-start="0" data-purecounter-end="98"
+                                        data-purecounter-duration="2"></span>
+                                    <span class="label">Success Rate %</span>
+                                </div>
+                            </div>
 
-        /* Navbar */
-        nav {
-            background: linear-gradient(90deg, #4f46e5, #3b82f6);
-            color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 5%;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
+                            <div class="hero-buttons">
+                                <a href="#courses" class="btn btn-primary">Booking Now</a>
+                                <a href="#about" class="btn btn-outline">Learn More</a>
+                            </div>
 
-        nav .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
+                            <div class="hero-features">
+                                <div class="feature">
+                                    <i class="bi bi-shield-check"></i>
+                                    <span>Certified Programs</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="bi bi-clock"></i>
+                                    <span>Lifetime Access</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="bi bi-people"></i>
+                                    <span>Expert Instructors</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
+                    <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+                        <div class="hero-image">
+                            <div class="main-image">
+                                <img src="assets/img/education/courses-13.webp" alt="Online Learning" class="img-fluid">
+                            </div>
 
-        nav ul li {
-            margin-left: 2rem;
-        }
+                            <div class="floating-cards">
+                                <div class="course-card" data-aos="fade-up" data-aos-delay="300">
+                                    <div class="card-icon">
+                                        <i class="bi bi-code-slash"></i>
+                                    </div>
+                                    <div class="card-content">
+                                        <h6>Web Development</h6>
+                                        <span>2,450 Students</span>
+                                    </div>
+                                </div>
 
-        nav ul li a {
-            text-decoration: none;
-            color: #fff;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
+                                <div class="course-card" data-aos="fade-up" data-aos-delay="400">
+                                    <div class="card-icon">
+                                        <i class="bi bi-palette"></i>
+                                    </div>
+                                    <div class="card-content">
+                                        <h6>UI/UX Design</h6>
+                                        <span>1,890 Students</span>
+                                    </div>
+                                </div>
 
-        nav ul li a:hover {
-            color: #facc15;
-        }
+                                <div class="course-card" data-aos="fade-up" data-aos-delay="500">
+                                    <div class="card-icon">
+                                        <i class="bi bi-graph-up"></i>
+                                    </div>
+                                    <div class="card-content">
+                                        <h6>Digital Marketing</h6>
+                                        <span>3,200 Students</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        /* Hero */
-        .hero {
-            background: linear-gradient(to right, #4f46e5, #3b82f6);
-            color: white;
-            text-align: center;
-            padding: 6rem 2rem;
-        }
-
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .hero a {
-            background-color: #facc15;
-            color: #333;
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-
-        .hero a:hover {
-            background-color: #fde047;
-        }
-
-        /* About */
-        .about {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            padding: 5rem 10%;
-            background: #f3f4f6;
-        }
-
-        .about-text {
-            flex: 1;
-            min-width: 300px;
-            margin-bottom: 2rem;
-        }
-
-        .about-text h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: #111827;
-        }
-
-        .about-text p {
-            line-height: 1.6;
-            color: #4b5563;
-        }
-
-        .about img {
-            width: 400px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Produk */
-        .produk {
-            text-align: center;
-            padding: 5rem 10%;
-        }
-
-        .produk h2 {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .produk-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: transform 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-        }
-
-        .card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .card-content {
-            padding: 1.5rem;
-        }
-
-        .card-content h3 {
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-            color: #111827;
-        }
-
-        .card-content p {
-            font-size: 0.9rem;
-            color: #4b5563;
-            margin-bottom: 0.8rem;
-        }
-
-        .price {
-            color: #4f46e5;
-            font-weight: 600;
-        }
-
-        /* CTA */
-        .cta {
-            background: linear-gradient(90deg, #4f46e5, #3b82f6);
-            color: #fff;
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-
-        .cta h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .cta a {
-            background-color: #facc15;
-            color: #333;
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background 0.3s;
-        }
-
-        .cta a:hover {
-            background-color: #fde047;
-        }
-
-        /* Footer */
-        footer {
-            background: #111827;
-            color: #9ca3af;
-            text-align: center;
-            padding: 1.5rem 0;
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            nav ul {
-                flex-direction: column;
-                position: absolute;
-                top: 70px;
-                left: 0;
-                width: 100%;
-                background: #4f46e5;
-                display: none;
-            }
-
-            nav ul.show {
-                display: flex;
-            }
-
-            nav ul li {
-                margin: 1rem 0;
-                text-align: center;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <!-- Navbar -->
-    <nav>
-        <div class="logo">UMKM Digital</div>
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Tentang</a></li>
-            <li><a href="#">Produk</a></li>
-            <li><a href="#">Testimoni</a></li>
-            <li><a href="#">Kontak</a></li>
-            <li><a href="{{ route('reservation.index') }}">Log In</a></li>
-        </ul>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1>Selamat Datang di <span style="color:#facc15;">UMKM Digital</span></h1>
-        <p>Tempatnya pelaku UMKM memasarkan produk, mengembangkan bisnis, dan menjangkau pelanggan secara digital!</p>
-        <a href="#">Lihat Produk</a>
-    </section>
-
-    <!-- About Section -->
-    <section class="about">
-        <div class="about-text justify">
-            <h2>Tentang UMKM Digital – Rental PS
-            </h2>
-            <p>
-
-                Kami membantu pelaku UMKM rental PlayStation untuk naik kelas melalui transformasi digital. Dengan
-                platform ini, pemilik rental PS bisa menampilkan layanan dan fasilitas mereka secara profesional, mulai
-                dari paket permainan, pilihan konsol, hingga promo yang sedang berlangsung.
-
-                Melalui keberadaan online yang mudah dan efisien, usaha rental PS dapat menjangkau lebih banyak
-                pelanggan, meningkatkan pemesanan, serta membangun brand yang lebih kuat di dunia digital. UMKM Digital
-                hadir untuk memastikan bisnis rental PS Anda tetap kompetitif dan terus berkembang di era modern.
-            </p>
-        </div>
-        <img src="{{ asset('img/main.jpg') }}" alt="Tim UMKM Digital">
-    </section>
-
-    <!-- Produk Section -->
-    <section class="produk">
-        <h2>Produk Unggulan</h2>
-        <div class="produk-grid">
-            <div class="card">
-                <img src="{{ asset('img/room1.jpg') }}" alt="Produk 1">
-                <div class="card-content">
-                    <h3>Kopi Nusantara</h3>
-                    <p>Cita rasa kopi lokal pilihan dengan aroma khas Indonesia.</p>
-                    <div class="price">Rp50.000</div>
-                </div>
-            </div>
-            <div class="card">
-                <img src="{{ asset('img/room2.jpg') }}" alt="Produk 2">
-                <div class="card-content">
-                    <h3>Kerajinan Kayu</h3>
-                    <p>Produk unik dari bahan alami dengan desain khas tradisional.</p>
-                    <div class="price">Rp120.000</div>
-                </div>
-            </div>
-            <div class="card">
-                <img src="{{ asset('img/room3.jpg') }}" alt="Produk 3">
-                <div class="card-content">
-                    <h3>Batik Modern</h3>
-                    <p>Perpaduan elegan antara motif klasik dan gaya kekinian.</p>
-                    <div class="price">Rp250.000</div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- CTA -->
-    <section class="cta">
-        <h2>Ingin Bisnismu Tampil di UMKM Digital?</h2>
-        <p>Daftarkan usaha kamu sekarang dan jangkau pelanggan lebih luas!</p>
-        <a href="#">Daftar Sekarang</a>
-    </section>
+        <div class="hero-background">
+            <div class="bg-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
+        </div>
 
-    <!-- Footer -->
-    <footer>
-        &copy; 2025 UMKM Digital. Semua hak cipta dilindungi.
-    </footer>
+    </section><!-- /Courses Hero Section -->
 
-</body>
-<!-- 🌐 Floating WhatsApp Button 6281234567890 -->
-<a href="https://wa.me/628988182167?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20produk%20Anda"
-    class="whatsapp-float" target="_blank" title="Hubungi kami di WhatsApp">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Logo"
-        class="whatsapp-icon">
-</a>
+    <!-- Featured Courses Section -->
+    <section id="featured-courses" class="featured-courses section">
 
-<!-- 💅 CSS -->
-<style>
-    .whatsapp-float {
-        position: fixed;
-        width: 60px;
-        height: 60px;
-        bottom: 25px;
-        right: 25px;
-        background-color: #25D366;
-        border-radius: 50%;
-        text-align: center;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-        z-index: 999;
-        transition: all 0.3s ease-in-out;
-    }
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Play Rooms</h2>
+            <p>Ruangan untuk bermain dengan pengalaman yang menyenangkan</p>
+        </div><!-- End Section Title -->
 
-    .whatsapp-float:hover {
-        background-color: #1ebe5a;
-        transform: scale(1.1);
-    }
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-    .whatsapp-icon {
-        width: 35px;
-        height: 35px;
-        margin-top: 12px;
-    }
-</style>
+            <div class="row gy-4">
+                @include('guest.layouts.rooms-card')
+            </div>
 
-</html>
+            <div class="more-courses text-center" data-aos="fade-up" data-aos-delay="500">
+                <a href="courses.html" class="btn-more">View All Courses</a>
+            </div>
+
+        </div>
+
+    </section><!-- /Featured Courses Section -->
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials section">
+        @include('guest.layouts.testimoni')
+    </section><!-- /Testimonials Section -->
+
+    <!-- Recent Blog Posts Section -->
+    <section id="recent-blog-posts" class="recent-blog-posts section">
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Recent Blog Posts</h2>
+            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+        </div><!-- End Section Title -->
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+            <div class="row gy-4">
+
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card">
+                        <div class="card-top d-flex align-items-center">
+                            <img src="assets/img/person/person-f-12.webp" alt="Author" class="rounded-circle me-2">
+                            <span class="author-name">By Andy glamer</span>
+                            <span class="ms-auto likes"><i class="bi bi-heart"></i> 65</span>
+                        </div>
+                        <div class="card-img-wrapper">
+                            <img src="assets/img/blog/blog-post-1.webp" alt="Post Image">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="blog-details.html">Sed ut perspiciatis unde omnis iste
+                                    natus</a></h5>
+                            <p class="card-text">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit
+                                aut fugit, sed quia consequuntur magni dolores eos qui ratione...</p>
+                        </div>
+                    </div>
+                </div><!-- End Post Item Card -->
+
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card position-relative">
+                        <div class="card-top d-flex align-items-center">
+                            <img src="assets/img/person/person-f-13.webp" alt="Author" class="rounded-circle me-2">
+                            <span class="author-name">By Den viliamson</span>
+                            <span class="ms-auto likes"><i class="bi bi-heart"></i> 35</span>
+                        </div>
+                        <div class="card-img-wrapper">
+                            <img src="assets/img/blog/blog-post-2.webp" alt="Post Image">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="blog-details.html">Nemo enim ipsam voluptatem quia
+                                    voluptas sit</a></h5>
+                            <p class="card-text">At vero eos et accusamus et iusto odio dignissimos ducimus qui
+                                blanditiis praesentium voluptatum deleniti atque corrupti quos...</p>
+                        </div>
+                    </div>
+                </div><!-- End Post Item Card -->
+
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card">
+                        <div class="card-top d-flex align-items-center">
+                            <img src="assets/img/person/person-m-10.webp" alt="Author" class="rounded-circle me-2">
+                            <span class="author-name">By Jones robbert</span>
+                            <span class="ms-auto likes"><i class="bi bi-heart"></i> 58</span>
+                        </div>
+                        <div class="card-img-wrapper">
+                            <img src="assets/img/blog/blog-post-3.webp" alt="Post Image">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="blog-details.html">Ut enim ad minima veniam, quis
+                                    nostrum exercitationem</a></h5>
+                            <p class="card-text">Quis autem vel eum iure reprehenderit qui in ea voluptate velit
+                                esse quam nihil molestiae consequatur, vel illum qui dolorem...</p>
+                        </div>
+                    </div>
+                </div><!-- End Post Item Card -->
+
+            </div>
+
+        </div>
+
+    </section><!-- /Recent Blog Posts Section -->
+
+    <!-- Cta Section -->
+    <section id="cta" class="cta section light-background">
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-6" data-aos="fade-right" data-aos-delay="200">
+                    <div class="cta-content">
+                        <h2>Transform Your Future with Expert-Led Online Courses</h2>
+                        <p>Join thousands of successful learners who have advanced their careers through our
+                            comprehensive online education platform.</p>
+
+                        <div class="features-list">
+                            <div class="feature-item" data-aos="fade-up" data-aos-delay="300">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>20+ Expert instructors with industry experience</span>
+                            </div>
+                            <div class="feature-item" data-aos="fade-up" data-aos-delay="350">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Certificate of completion for every course</span>
+                            </div>
+                            <div class="feature-item" data-aos="fade-up" data-aos-delay="400">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>24/7 access to course materials and resources</span>
+                            </div>
+                            <div class="feature-item" data-aos="fade-up" data-aos-delay="450">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Interactive assignments and real-world projects</span>
+                            </div>
+                        </div>
+
+                        <div class="cta-actions" data-aos="fade-up" data-aos-delay="500">
+                            <a href="courses.html" class="btn btn-primary">Booking Now</a>
+                            <a href="enroll.html" class="btn btn-outline">Enroll Now</a>
+                        </div>
+
+                        <div class="stats-row" data-aos="fade-up" data-aos-delay="400">
+                            <div class="stat-item">
+                                <h3><span data-purecounter-start="0" data-purecounter-end="15000"
+                                        data-purecounter-duration="2" class="purecounter"></span>+</h3>
+                                <p>Students Enrolled</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3><span data-purecounter-start="0" data-purecounter-end="150"
+                                        data-purecounter-duration="2" class="purecounter"></span>+</h3>
+                                <p>Courses Available</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3><span data-purecounter-start="0" data-purecounter-end="98"
+                                        data-purecounter-duration="2" class="purecounter"></span>%</h3>
+                                <p>Success Rate</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="300">
+                    <div class="cta-image">
+                        <img src="assets/img/education/courses-4.webp" alt="Online Learning Platform" class="img-fluid">
+                        <div class="floating-element student-card" data-aos="zoom-in" data-aos-delay="600">
+                            <div class="card-content">
+                                <i class="bi bi-person-check-fill"></i>
+                                <div class="text">
+                                    <span class="number">2,450</span>
+                                    <span class="label">New Students This Month</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="floating-element course-card" data-aos="zoom-in" data-aos-delay="700">
+                            <div class="card-content">
+                                <i class="bi bi-play-circle-fill"></i>
+                                <div class="text">
+                                    <span class="number">50+</span>
+                                    <span class="label">Hours of Content</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!-- /Cta Section -->
+@endsection
