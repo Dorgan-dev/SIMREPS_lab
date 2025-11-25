@@ -396,11 +396,11 @@
                                 <span>Contribute</span>
                             </a>
                         </li>
-
+                        {{-- https://github.com/zuramai/mazer#donate --}}
                         <li class="sidebar-item  ">
-                            <a href="https://github.com/zuramai/mazer#donate" class='sidebar-link'>
+                            <a href="{{ route('auth.logout') }}" class='sidebar-link'>
                                 <i class="bi bi-cash"></i>
-                                <span>Donate</span>
+                                <span>Logout</span>
                             </a>
                         </li>
 

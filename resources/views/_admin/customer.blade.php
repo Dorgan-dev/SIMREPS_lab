@@ -27,6 +27,7 @@
                             <th>Email</th>
                             <th>Username</th>
                             <th>Password</th>
+                            <th>Role</th>
                             <th>Dibuat</th>
                             <th>Aksi</th>
                         </tr>
@@ -41,6 +42,7 @@
                             <th>Email</th>
                             <th>Username</th>
                             <th>Password</th>
+                            <th>Role</th>
                             <th>Dibuat</th>
                             <th>Aksi</th>
                         </tr>
@@ -56,6 +58,7 @@
                                 <td>{{ $data->email }}</td>
                                 <td>{{ $data->username }}</td>
                                 <td>{{ substr($data->password, 0, 5) }}...</td>
+                                <td>{{ $data->role }}</td>
                                 <td>{{ $data->created_at }}</td>
                                 <td>
                                     <div class="d-flex gap-6">

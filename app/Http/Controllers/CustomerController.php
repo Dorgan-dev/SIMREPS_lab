@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class CustomerController extends Controller
@@ -12,6 +13,9 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Customer::all();
+        if (!Auth::check()) {
+            return view('guest.login');
+        }
         return view('_customer.index', compact('customers'));
     }
 

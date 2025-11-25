@@ -9,6 +9,22 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthenticationController extends Controller
 {
+    public function index()
+    {
+
+        if (!Auth::check()) {
+
+            if (Auth::user()->role == 1) {
+                return redirect()->route('admin.index');
+            }
+
+            if (Auth::user()->role == 2) {
+                return redirect()->route('resepsionis.index');
+            }
+
+            return redirect()->route('customer.index');
+        }
+    }
     /**
      * Proses Login
      */
@@ -19,13 +35,24 @@ class AuthenticationController extends Controller
             'password' => 'required'
         ]);
 
-        $credentials = $request->only('username', 'password');
+        // $user = User::where('email', $request->email)->first();
+        // if ($user && Hash::check($request->password, $user->password)) {
 
-        // Coba login
+        //         if (Auth::user()->role == 1) {
+        //             return redirect()->route('admin.index');
+        //         }
+
+        //         if (Auth::user()->role == 2) {
+        //             return redirect()->route('resepsionis.index');
+        //         }
+
+        //         return redirect()->route('customer.index');
+        // }
+
+        $credentials = $request->only('username', 'password');
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // Arahkan sesuai role
             if (Auth::user()->role == 1) {
                 return redirect()->route('admin.index');
             }
