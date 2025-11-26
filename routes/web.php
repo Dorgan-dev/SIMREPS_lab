@@ -10,7 +10,7 @@ use App\Http\Controllers\AuthenticationController;
 use App\Http\Middleware\CheckIsLogin;
 use App\Models\Reservation;
 
-Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('checkislogin');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('home.about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact');
 Route::get('/login', [HomeController::class, 'login'])->name('home.login');
