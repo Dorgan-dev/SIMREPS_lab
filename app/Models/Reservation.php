@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -15,11 +16,14 @@ class Reservation extends Model
     protected $fillable = [
         'cust_id',
         'console_id',
+        'tanggal_bermain',
         'waktu_mulai',
+        'waktu_selesai',
         'durasi_jam',
-        'disetujui_oleh',
         'status',
+        'disetujui_oleh'
     ];
+
 
     public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
     {

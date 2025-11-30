@@ -21,43 +21,8 @@
                 </a>
 
                 <ul>
-                    <!-- Submenu level 1 dengan submenu level 2 di dalamnya -->
-                    <li class="dropdown">
-                        <a href="#">
-                            <span>Ruangan</span>
-                            <i class="bi bi-chevron-down toggle-dropdown"></i>
-                        </a>
-                        <ul>
-                            <li><a href="#">Ruangan VIP</a></li>
-                            <li><a href="#">Ruangan Reguler</a></li>
-
-                            <!-- Submenu level 2 dengan submenu level 3 -->
-                            <li class="dropdown">
-                                <a href="#">Fasilitas Ruangan</a>
-                                <i class="bi bi-chevron-down toggle-dropdown"></i>
-                                <ul>
-                                    <li><a href="#">AC</a></li>
-                                    <li><a href="#">Proyektor</a></li>
-                                    <li><a href="#">Wi-Fi</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- Submenu level 1 dengan submenu level 2 di dalamnya -->
-                    <li class="dropdown">
-                        <a href="#">
-                            <span>Console</span>
-                            <i class="bi bi-chevron-down toggle-dropdown"></i>
-                        </a>
-                        <ul>
-                            <li><a href="#">Play Station 5</a></li>
-                            <li><a href="#">Play Station 4</a></li>
-                            <li><a href="#">Play Station 3</a></li>
-                        </ul>
-                    </li>
-
-                    <!-- Submenu level 1 lainnya -->
+                    <li><a href="{{ route('home.room')}}">Ruangan</a></li>
+                    <li><a href="{{ route('home.console')}}">Console</a></li>
                     <li><a href="#">Jadwal Hari Ini</a></li>
                     <li><a href="#">Reservasi Mendatang</a></li>
                 </ul>

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Customer;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -14,6 +15,9 @@ class AdminController extends Controller
      */
     public function index()
     {
+        if (!Auth::check()) {
+            return view('guest.login');
+        }
         return view('_admin.index');
     }
 

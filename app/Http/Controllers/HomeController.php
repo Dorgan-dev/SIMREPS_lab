@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Console;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -29,8 +30,21 @@ class HomeController extends Controller
         return view('guest.login');
     }
 
-    public function register(){
+    public function register()
+    {
         return view('guest.register');
+    }
+
+    public function room()
+    {
+        return view('guest.room');
+    }
+
+    public function console(Request $request)
+    {
+        $filterableColumns   = ['kategori'];
+        $console['data'] = Console::filter($request, $filterableColumns)->paginate(10)->withQueryString();
+        return view('guest.console', $console);
     }
 
     /**

@@ -90,47 +90,5 @@
         </div>
 
     </main>
-    <!-- Modal Notifikasi -->
-    <div class="modal fade" id="notifModal" tabindex="-1" aria-labelledby="notifModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-
-                <!-- Header Modal -->
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="notifModalLabel">Berhasil</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <!-- Body Modal -->
-                <div class="modal-body" id="notifMessage">
-                    <!-- Pesan akan diisi melalui JavaScript -->
-                </div>
-
-                <!-- Footer Modal -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    {{-- Script modal --}}
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var successMessage = @json(session('success'));
-            var errorMessage = @json(session('error'));
-            var messageElement = document.getElementById('notifMessage');
-
-            if (successMessage) {
-                messageElement.innerHTML = successMessage;
-                var notifModal = new bootstrap.Modal(document.getElementById('notifModal'));
-                notifModal.show();
-            } else if (errorMessage) {
-                messageElement.innerHTML = errorMessage;
-                var notifModal = new bootstrap.Modal(document.getElementById('notifModal'));
-                notifModal.show();
-            }
-        });
-    </script>
+    
 @endsection

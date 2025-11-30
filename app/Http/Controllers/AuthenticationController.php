@@ -11,20 +11,21 @@ class AuthenticationController extends Controller
 {
     public function index()
     {
-
-        if (!Auth::check()) {
+        if (Auth::check()) {
 
             if (Auth::user()->role == 1) {
-                return redirect()->route('admin.index');
+                return redirect()->route('admin');
             }
 
             if (Auth::user()->role == 2) {
-                return redirect()->route('resepsionis.index');
+                return redirect()->route('user.reseptionis');
             }
 
             return redirect()->route('customer.index');
         }
+        return view('guest.login');
     }
+
     /**
      * Proses Login
      */
@@ -35,38 +36,27 @@ class AuthenticationController extends Controller
             'password' => 'required'
         ]);
 
-        // $user = User::where('email', $request->email)->first();
-        // if ($user && Hash::check($request->password, $user->password)) {
-
-        //         if (Auth::user()->role == 1) {
-        //             return redirect()->route('admin.index');
-        //         }
-
-        //         if (Auth::user()->role == 2) {
-        //             return redirect()->route('resepsionis.index');
-        //         }
-
-        //         return redirect()->route('customer.index');
-        // }
-
         $credentials = $request->only('username', 'password');
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            if (Auth::user()->role == 1) {
-                return redirect()->route('admin.index');
+            // Jika user masuk karena diarahkan middleware (intended), gunakan itu
+            if (session('url.intended')) {
+                return redirect()->intended();
             }
 
-            if (Auth::user()->role == 2) {
-                return redirect()->route('resepsionis.index');
-            }
-
-            return redirect()->route('customer.index');
+            // Kalau tidak ada intended URL (misalnya login manual),
+            // arahkan sesuai role
+            return match (Auth::user()->role) {
+                1 => redirect()->route('admin'),
+                2 => redirect()->route('resepsionis.index'),
+                default => redirect()->route('customer.index'),
+            };
         }
 
-        return back()->with('error', 'Username atau password salah.');
+        return back()->with('error', 'Username atau password salah.')->withInput();
     }
-
     /**
      * Proses Register
      */

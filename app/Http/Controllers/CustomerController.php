@@ -12,11 +12,7 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $customers = Customer::all();
-        if (!Auth::check()) {
-            return view('guest.login');
-        }
-        return view('_customer.index', compact('customers'));
+
     }
 
     public function create()

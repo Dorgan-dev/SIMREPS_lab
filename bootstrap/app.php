@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckGuest;
 use App\Http\Middleware\CheckIsLogin;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Foundation\Application;
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'checkislogin' => CheckIsLogin::class,
             'checkrole' => CheckRole::class,
+            'checkguest' => CheckGuest::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
