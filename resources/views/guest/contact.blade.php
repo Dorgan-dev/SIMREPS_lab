@@ -1,110 +1,120 @@
-{{-- Memberi tahu Blade untuk menggunakan layout master yang baru dibuat --}}
 @extends('guest.layouts.app')
 
-{{-- Mendefinisikan konten untuk @yield('content') di layout master --}}
 @section('content')
-
-    <section id="contact" class="contact section">
-
-        {{-- Section Title --}}
-        <div class="container section-title" data-aos="fade-up">
-            <h2>Kontak Kami</h2>
-            <p>Kami siap melayani Anda. Silakan isi formulir di bawah ini atau hubungi kami melalui detail yang tersedia.</p>
-        </div>
-
-        {{-- Konten Utama Kontak: Baris dengan 2 Kolom --}}
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-            <div class="row gy-4">
-
-                {{-- Kolom Kiri: Detail Kontak (4 dari 12 kolom) --}}
-                <div class="col-lg-4">
-                    <div class="info-wrap">
-
-                        {{-- Elemen Alamat --}}
-                        <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
-                            <i class="bi bi-geo-alt flex-shrink-0"></i>
-                            <div>
-                                <h3>Alamat</h3>
-                                <p>Jl. Jend. Sudirman No. 123, Pekanbaru, Riau, 28282</p>
-                            </div>
-                        </div>
-
-                        {{-- Elemen Email --}}
-                        <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
-                            <i class="bi bi-envelope flex-shrink-0"></i>
-                            <div>
-                                <h3>Email</h3>
-                                <p>info@simreps.com</p>
-                            </div>
-                        </div>
-
-                        {{-- Elemen Telepon --}}
-                        <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
-                            <i class="bi bi-phone flex-shrink-0"></i>
-                            <div>
-                                <h3>Telepon</h3>
-                                <p>+62 812 3456 7890</p>
-                            </div>
-                        </div>
-
-                        {{-- Elemen Peta (Embed Google Maps) --}}
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15957.382024505963!2d101.4475475!3d0.5053155!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5ac0372074e5f%3A0x6b45a0890b21a329!2sPekanbaru%2C%20Riau!5e0!3m2!1sid!2sid!4v1700400000000!5m2!1sid!2sid"
-                            frameborder="0"
-                            style="border:0; width: 100%; height: 270px;"
-                            allowfullscreen=""
-                            loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade">
-                        </iframe>
-
-                    </div>
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Page Title -->
+            <div class="page-title light-background">
+                <div class="container page-title light-background section-title">
+                    <h2>Kontak Kami</h2>
+                    <p>Kami siap melayani Anda. Silakan isi formulir di bawah ini atau hubungi kami melalui detail yang
+                        tersedia.</p>
                 </div>
-
-                {{-- Kolom Kanan: Formulir Kontak (8 dari 12 kolom) --}}
-                <div class="col-lg-8">
-                    <form action="" method="post" role="form" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
-                        @csrf {{-- Wajib untuk semua form di Laravel --}}
-
-                        <div class="row gy-4">
-
-                            {{-- Input Nama --}}
-                            <div class="col-md-6">
-                                <input type="text" name="name" class="form-control" id="name" placeholder="Nama Anda" required>
-                            </div>
-
-                            {{-- Input Email --}}
-                            <div class="col-md-6 ">
-                                <input type="email" class="form-control" name="email" id="email" placeholder="Email Anda" required>
-                            </div>
-
-                            {{-- Input Subjek --}}
-                            <div class="col-md-12">
-                                <input type="text" class="form-control" name="subject" id="subject" placeholder="Subjek" required>
-                            </div>
-
-                            {{-- Input Pesan --}}
-                            <div class="col-md-12">
-                                <textarea class="form-control" name="message" rows="6" placeholder="Pesan Anda" required></textarea>
-                            </div>
-
-                            {{-- Area Status Pesan (Digunakan oleh JS/AJAX form) --}}
-                            <div class="col-md-12 text-center">
-                                <div class="loading">Memuat</div>
-                                <div class="error-message"></div>
-                                <div class="sent-message">Pesan Anda telah terkirim. Terima kasih!</div>
-
-                                <button type="submit">Kirim Pesan</button>
-                            </div>
-
-                        </div>
-                    </form>
-                </div>
-
             </div>
 
-        </div>
+            <!-- Contact Section -->
+            <section id="contact-details" class="contact section">
+                <div class="container" data-aos="fade-up" data-aos-delay="100">
+                    <div class="contact-main-wrapper">
+                        <!-- Google Map -->
+                        <div class="map-wrapper" style="height: 400px;">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1994.8101487257734!2d101.42489609468213!3d0.5708481072156557!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5ab67086f2e89%3A0x65a24264fec306bb!2sPoliteknik%20Caltex%20Riau!5e0!3m2!1sen!2sid!4v1764677704481!5m2!1sen!2sid"
+                                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
 
-    </section>
+                        <!-- Contact Information -->
+                        <div class="contact-content">
+                            <div class="contact-cards-container" data-aos="fade-up" data-aos-delay="300">
+                                <div class="contact-card">
+                                    <div class="icon-box">
+                                        <i class="bi bi-geo-alt"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <h4>Location</h4>
+                                        <p>Jl. Umban Sari No.1, Umban Sari, Kec. Rumbai, Kota Pekanbaru, Riau 28265</p>
+                                    </div>
+                                </div>
 
+                                <div class="contact-card">
+                                    <div class="icon-box">
+                                        <i class="bi bi-envelope"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <h4>Email</h4>
+                                        <p>ridho24ti@mahasiswa.pcr.ac.id</p>
+                                    </div>
+                                </div>
+
+                                <div class="contact-card">
+                                    <div class="icon-box">
+                                        <i class="bi bi-telephone"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <h4>Call</h4>
+                                        <p>+62 898 8182 167</p>
+                                    </div>
+                                </div>
+
+                                <div class="contact-card">
+                                    <div class="icon-box">
+                                        <i class="bi bi-clock"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <h4>Open Hours</h4>
+                                        <p>Monday-Friday: 9AM - 6PM</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contact Form -->
+                            <div class="contact-form-container" data-aos="fade-up" data-aos-delay="400">
+                                <h3>Get in Touch</h3>
+                                <p>Silakan isi formulir berikut untuk menghubungi kami. Tim kami akan dengan senang hati
+                                    membantu Anda dan memberikan respon secepat mungkin.</p>
+
+                                <form action="{{ url('forms/contact') }}" method="post" class="php-email-form">
+                                    @csrf
+                                    <div class="row">
+                                        <div class="col-md-6 form-group">
+                                            <input type="text" name="name" class="form-control" id="name"
+                                                placeholder="Your Name" required="">
+                                        </div>
+                                        <div class="col-md-6 form-group mt-3 mt-md-0">
+                                            <input type="email" class="form-control" name="email" id="email"
+                                                placeholder="Your Email" required="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-3">
+                                        <input type="text" class="form-control" name="subject" id="subject"
+                                            placeholder="Subject" required="">
+                                    </div>
+                                    <div class="form-group mt-3">
+                                        <textarea class="form-control" name="message" rows="5" placeholder="Message" required=""></textarea>
+                                    </div>
+
+                                    <div class="my-3">
+                                        <div class="loading">Loading</div>
+                                        <div class="error-message"></div>
+                                        <div class="sent-message">Your message has been sent. Thank you!</div>
+                                    </div>
+
+                                    <div class="form-submit">
+                                        <button type="submit">Send Message</button>
+                                        <div class="social-links">
+                                            <a href="https://www.instagram.com/mridhospt_/"><i class="bi bi-twitter"></i></a>
+                                            <a href="https://www.instagram.com/mridhospt_/"><i class="bi bi-facebook"></i></a>
+                                            <a href="https://www.instagram.com/mridhospt_/"><i class="bi bi-instagram"></i></a>
+                                            <a href="https://www.instagram.com/mridhospt_/"><i class="bi bi-linkedin"></i></a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section><!-- /Contact Section -->
+
+        </main>
 @endsection

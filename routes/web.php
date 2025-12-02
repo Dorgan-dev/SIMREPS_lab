@@ -29,7 +29,7 @@ Route::middleware('checkguest')->group(function () {
 
 // Hanya user yang sudah login yang boleh akses logout
 Route::middleware('checkislogin')->group(function () {
-    Route::get('/auth/logout', [AuthenticationController::class, 'logout'])->name('auth.logout');
+    Route::post('/auth/logout', [AuthenticationController::class, 'logout'])->name('auth.logout');
     Route::post('/customer/reservation', [ReservationController::class, 'customerStore'])->name('customer.reservation.store');
 });
 
@@ -57,7 +57,11 @@ Route::group(['middleware' => ['checkrole:3']], function () {
 Route::resource('/reservation', ReservationController::class);
 Route::resource('/admincustomer', CustomerController::class);
 
-Route::group(['middleware' => ['checkislogin']], function () {
-    Route::get('/about', [HomeController::class, 'about'])->name('home.about');
-    Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact');
-});
+// Route::group(['middleware' => ['checkislogin']], function () {
+//     Route::get('/about', [HomeController::class, 'about'])->name('home.about');
+//     Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact');
+// });
+
+Route::get('/404', function () {
+    return response()->view('guest.404', [], 404);
+})->name('404');
