@@ -1,10 +1,8 @@
 <?php
-
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class CreateReservationDummy extends Seeder
 {
@@ -15,17 +13,32 @@ class CreateReservationDummy extends Seeder
     {
         $faker = \Faker\Factory::create();
 
-        foreach (range(1, 1000) as $index) {
+        foreach (range(1, 23) as $index) {
+
+            $tanggal = $faker->date();              // contoh: 2025-12-03
+            $mulai   = $faker->time('H:i:s');       // contoh: 14:24:08
+            $durasi  = $faker->numberBetween(1, 5); // 1–5 jam
+
+            // Buat datetime lengkap
+            $waktu_mulai   = $tanggal . ' ' . $mulai;
+            $waktu_selesai = date('Y-m-d H:i:s', strtotime($waktu_mulai . " + $durasi hours"));
+
             DB::table('reservations')->insert([
-                'cust_id' => $faker->numberBetween(1, 500),   // sesuaikan jumlah customer
-                'console_id' => $faker->numberBetween(1, 20), // misal ada 20 console
-                'waktu_mulai' => $faker->time('H:i:s'),
-                'durasi_jam' => $faker->time('H:i:s', '03:00:00'), // durasi acak max 3 jam
-                'disetujui_oleh' => $faker->numberBetween(1, 10), // id admin
-                'status' => $faker->randomElement(['Dipesan', 'Berlangsung','Selesai', 'Dibatalkan']),
-                'created_at' => now(),
-                'updated_at' => now(),
+                'cust_id'         => $faker->numberBetween(1, 500),
+                'console_id'      => $faker->numberBetween(1, 20),
+
+                'tanggal_bermain' => $tanggal,
+                'waktu_mulai'     => $waktu_mulai,
+                'waktu_selesai'   => $waktu_selesai,
+
+                'durasi_jam'      => $durasi,
+
+                'disetujui_oleh'  => $faker->numberBetween(1, 10),
+                'status'          => $faker->randomElement(['Dipesan', 'Berlangsung', 'Selesai', 'Dibatalkan']),
+                'created_at'      => now(),
+                'updated_at'      => now(),
             ]);
         }
     }
+
 }

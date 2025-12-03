@@ -16,8 +16,7 @@ return new class extends Migration
             $table->date('tanggal_bermain');
 
             // waktu mulai & selesai (date + time)
-            $table->dateTime('waktu_mulai');
-            $table->dateTime('waktu_selesai');
+            $table->time('waktu_selesai');
 
             // durasi jam INTEGER (bukan time)
             $table->integer('durasi_jam');

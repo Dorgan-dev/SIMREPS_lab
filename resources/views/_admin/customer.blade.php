@@ -19,7 +19,6 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="custom-table" id="custom-table" width="100%" cellspacing="0">
-                        {{-- TABLE HEADER --}}
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -48,7 +47,9 @@
                                     <td>{{ $data->email }}</td>
                                     <td>{{ $data->username }}</td>
                                     <td>{{ substr($data->password, 0, 5) }}...</td>
-                                    <td>{{ $data->role }}</td>
+                                    <td>
+                                        {{ $data->role == 1 ? 'Admin' : ($data->role == 2 ? 'Resepsionis' : 'Customer') }}
+                                    </td>
                                     <td>{{ $data->created_at }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
@@ -76,9 +77,9 @@
                                                 </h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
-                                            <form action="{{ route('customer.update', $data->id) }}" method="POST">
+                                            <form action="{{ route('admin.customer.update', $data->id) }}" method="POST">
                                                 @csrf
-                                                @method('PUT')
+                                                @method('POST')
                                                 <div class="modal-body">
                                                     <div class="row">
                                                         <div class="col-md-12 mb-3">
@@ -112,6 +113,27 @@
                                                             <input type="tel" name="no_hp" class="form-control"
                                                                 value="{{ $data->no_hp }}" required>
                                                         </div>
+                                                        <div class="col-md-12 mb-3">
+                                                            <label for="role" class="form-label">Role Akun</label>
+                                                            <select name="role" id="role"
+                                                                class="form-select @error('role') is-invalid @enderror"
+                                                                required>
+                                                                {{-- Nilai numerik dikirim ke database: 1=Admin, 2=Kasir, 3=Customer --}}
+                                                                <option value="3"
+                                                                    {{ old('role', 3) == 3 ? 'selected' : '' }}>
+                                                                    Customer</option>
+                                                                <option value="1"
+                                                                    {{ old('role') == 1 ? 'selected' : '' }}>
+                                                                    Admin</option>
+                                                                <option value="2"
+                                                                    {{ old('role') == 2 ? 'selected' : '' }}>
+                                                                    Resepsionis</option>
+                                                            </select>
+                                                            @error('role')
+                                                                <span
+                                                                    class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                                                            @enderror
+                                                        </div>
                                                         <div class="col-md-6 mb-3">
                                                             <label class="form-label">Kata Sandi Baru (opsional)</label>
                                                             <input type="password" name="password" class="form-control"
@@ -138,9 +160,9 @@
                                 <div class="modal fade" id="deleteModal{{ $data->id }}" tabindex="-1"
                                     aria-labelledby="deleteModalLabel{{ $data->id }}" aria-hidden="true">
                                     <div class="modal-dialog">
-                                        <form action="{{ route('customer.destroy', $data->id) }}" method="POST">
+                                        <form action="{{ route('admin.customer.destroy', $data->id) }}" method="POST">
                                             @csrf
-                                            @method('DELETE')
+                                            @method('POST')
                                             <div class="modal-content">
                                                 <div class="modal-header bg-danger text-white">
                                                     <h5 class="modal-title">Konfirmasi Hapus Akun</h5>
@@ -185,13 +207,12 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="tambahAkunLabel">Daftar Akun Baru</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="{{ route('auth.register') }}" method="POST">
+                    <form action="{{ route('admin.customer.store') }}" method="POST">
                         @csrf
                         <div class="modal-body">
                             <div class="row">
-                                <!-- Input Nama Lengkap -->
                                 <div class="col-md-12 mb-3">
                                     <label for="name" class="form-label">Nama Lengkap</label>
                                     <input type="text" name="name" id="name"
@@ -202,7 +223,6 @@
                                     @enderror
                                 </div>
 
-                                <!-- Username -->
                                 <div class="col-md-6 mb-3">
                                     <label for="username" class="form-label">Username</label>
                                     <input type="text" name="username" id="username"
@@ -213,12 +233,11 @@
                                     @enderror
                                 </div>
 
-                                <!-- Jenis Kelamin -->
                                 <div class="col-md-6 mb-3">
                                     <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
                                     <select name="jenis_kelamin" id="jenis_kelamin"
                                         class="form-select @error('jenis_kelamin') is-invalid @enderror" required>
-                                        <option value="" disabled selected>Pilih Jenis Kelamin</option>
+                                        <option value="" disabled>Pilih Jenis Kelamin</option>
                                         <option value="Laki-laki"
                                             {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>
                                             Laki-laki</option>
@@ -231,7 +250,6 @@
                                     @enderror
                                 </div>
 
-                                <!-- Email -->
                                 <div class="col-md-6 mb-3">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" name="email" id="email"
@@ -242,7 +260,6 @@
                                     @enderror
                                 </div>
 
-                                <!-- Nomor HP -->
                                 <div class="col-md-6 mb-3">
                                     <label for="no_hp" class="form-label">Nomor Telepon</label>
                                     <input type="tel" name="no_hp" id="no_hp"
@@ -253,7 +270,23 @@
                                     @enderror
                                 </div>
 
-                                <!-- Password -->
+                                <div class="col-md-12 mb-3">
+                                    <label for="role" class="form-label">Role Akun</label>
+                                    <select name="role" id="role"
+                                        class="form-select @error('role') is-invalid @enderror" required>
+                                        {{-- Nilai numerik dikirim ke database: 1=Admin, 2=Kasir, 3=Customer --}}
+                                        <option value="3" {{ old('role', 3) == 3 ? 'selected' : '' }}>
+                                            Customer</option>
+                                        <option value="1" {{ old('role') == 1 ? 'selected' : '' }}>
+                                            Admin</option>
+                                        <option value="2" {{ old('role') == 2 ? 'selected' : '' }}>
+                                            Kasir</option>
+                                    </select>
+                                    @error('role')
+                                        <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                </div>
+
                                 <div class="col-md-6 mb-3">
                                     <label for="password" class="form-label">Kata Sandi</label>
                                     <input type="password" name="password" id="password"
@@ -264,7 +297,6 @@
                                     @enderror
                                 </div>
 
-                                <!-- Konfirmasi Password -->
                                 <div class="col-md-6 mb-3">
                                     <label for="password-confirm" class="form-label">Konfirmasi Kata Sandi</label>
                                     <input type="password" name="password_confirmation" id="password-confirm"
@@ -273,7 +305,6 @@
                             </div>
                         </div>
 
-                        <!-- Tombol -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                 Batal

@@ -1,16 +1,13 @@
 <?php
 
-use App\Models\Reservation;
-use App\Http\Middleware\CheckIsLogin;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ConsoleController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\ConsoleController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('home.about');
@@ -36,7 +33,11 @@ Route::middleware('checkislogin')->group(function () {
 Route::group(['middleware' => ['checkrole:1']], function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin');
     Route::get('/admin/reservations', [ReservationController::class, 'index'])->name('admin.reservation');
-    Route::get('/admin/customers', [AdminController::class, 'customer'])->name('admin.customer');
+
+    Route::get('/admin/customers', [CustomerController::class, 'index'])->name('admin.customer');
+    Route::post('/admin/customers/store', [CustomerController::class, 'store'])->name('admin.customer.store');
+    Route::post('/admin/customers/update/{id}', [CustomerController::class, 'update'])->name('admin.customer.update');
+    Route::post('/admin/customers/destroy/{id}', [CustomerController::class, 'destroy'])->name('admin.customer.destroy');
 
     Route::resource('/admin/consoles', ConsoleController::class, [
         'names' => [
@@ -47,7 +48,7 @@ Route::group(['middleware' => ['checkrole:1']], function () {
             'edit'    => 'console.edit',
             'update'  => 'console.update',
             'destroy' => 'console.destroy',
-        ]
+        ],
     ]);
 });
 Route::group(['middleware' => ['checkrole:3']], function () {

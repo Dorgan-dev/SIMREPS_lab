@@ -33,22 +33,21 @@
         </div>
     </div>
     {{-- Modal Notifikasi --}}
-    <div class="modal fade" id="notifModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+    <div class="modal fade" id="notifModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered"> <!-- membuat modal center -->
+            <div class="modal-content shadow-lg rounded-3">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="notificationModalLabel">Notifikasi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title">Notifikasi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p id="notificationMessage">Pesan notifikasi muncul di sini.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tutup</button>
+                    <p id="notificationMessage" class="mb-0"></p>
                 </div>
             </div>
         </div>
     </div>
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -59,27 +58,31 @@
     <script src="{{ asset('_admin/plugins/feather.min.js') }}"></script>
     <!-- Custom scripts -->
     <script src="{{ asset('_admin/js/script.js') }}"></script>
+    <!-- Bootstrap JS -->
     <script>
         function showNotification(message) {
-            document.getElementById('notificationMessage').textContent = message;
+            const messageEl = document.getElementById('notificationMessage');
+            const modalEl = document.getElementById('notifModal');
 
-            var modalEl = document.getElementById('notifModal'); // FIXED
-            var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-            modal.show();
-        }
-    </script>
+            if (!modalEl || !messageEl) {
+                console.error("Elemen modal atau message tidak ditemukan!");
+                return;
+            }
 
-    <script>
-        function showNotification(message) {
-            const messageEl = document.getElementById('notifModal');
             messageEl.textContent = message;
 
-            const modalEl = document.getElementById('notifModal');
             const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
             modal.show();
         }
     </script>
 
+    @if (session('success'))
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                showNotification("{{ session('success') }}");
+            });
+        </script>
+    @endif
 </body>
 
 </html>

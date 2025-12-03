@@ -48,19 +48,6 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tfoot>
-                            <tr>
-                                <th>No</th>
-                                <th>Customer ID</th>
-                                <th>Console ID</th>
-                                <th>Durasi</th>
-                                <th>Waktu mulai</th>
-                                <th>Waktu selesai</th>
-                                <th>Disetujui oleh</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </tfoot>
                         <tbody>
                             @forelse ($data as $i => $item)
                                 <tr>

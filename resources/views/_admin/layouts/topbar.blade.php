@@ -95,10 +95,17 @@
                                         <i data-feather="settings" aria-hidden="true"></i>
                                         <span>Account settings</span>
                                     </a></li>
-                                <li><a class="danger" href="{{ route('auth.logout') }}">
-                                        <i data-feather="log-out" aria-hidden="true"></i>
-                                        <span>Log out</span>
-                                    </a></li>
+                                <li>
+                                    <form action="{{ route('auth.logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="danger"
+                                            style="background:none; border:none; padding:0; cursor:pointer; color:#e3342f;">
+                                            <i data-feather="log-out" aria-hidden="true"></i>
+                                            <span>Log out</span>
+                                        </button>
+                                    </form>
+                                </li>
+
                             </ul>
                         </div>
                     </div>
