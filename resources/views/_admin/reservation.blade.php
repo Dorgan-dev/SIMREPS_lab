@@ -11,7 +11,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 font-weight-bold text-primary">Reservation Table</h6>
                     <div class="d-flex align-items-center gap-2">
-                        <form method="GET" action="{{ route('admin.reservation') }}">
+                        <form method="GET" action="{{ route('admin.reservations.index') }}">
                             <select name="status" onchange="this.form.submit()" class="form-select">
                                 <option value="">Semua Status</option>
                                 <option value="Dipesan" {{ request('status') == 'Dipesan' ? 'selected' : '' }}>Dipesan

@@ -18,7 +18,9 @@ Route::get('/register', [HomeController::class, 'register'])->name('home.registe
 Route::get('/room', [HomeController::class, 'room'])->name('home.room');
 Route::get('/console', [HomeController::class, 'console'])->name('home.console');
 
-// Hanya tamu yang boleh akses login & register
+Route::get('/auth/google', [AuthenticationController::class, 'redirectToGoogle'])->name('redirect.google');
+Route::get('/auth/google/callback', [AuthenticationController::class, 'handleGoogleCallback'])->name('google.callback');
+
 Route::middleware('checkguest')->group(function () {
     Route::get('/auth', [AuthenticationController::class, 'index'])->name('auth');
     Route::get('/login', [HomeController::class, 'login'])->name('home.login');
@@ -26,60 +28,56 @@ Route::middleware('checkguest')->group(function () {
     Route::post('/auth/register', [AuthenticationController::class, 'register'])->name('auth.register');
 });
 
-// Hanya user yang sudah login yang boleh akses logout
-Route::middleware('checkislogin')->group(function () {
-    Route::post('/auth/logout', [AuthenticationController::class, 'logout'])->name('auth.logout');
-    Route::post('/customer/reservation', [ReservationController::class, 'customerStore'])->name('customer.reservation.store');
-});
+Route::middleware('checkislogin')->post('/auth/logout', [AuthenticationController::class, 'logout'])->name('auth.logout');
 
-Route::group(['middleware' => ['checkrole:1']], function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::get('/admin/profile', [AdminController::class, 'profile'])->name('admin.profile');
-    Route::put('/admin/profile/update', [AdminController::class, 'update'])->name('admin.profile.update');
-    Route::post('/admin/change-password', [AdminController::class, 'changePassword'])->name('admin.change-password');
+Route::middleware(['checkislogin', 'checkrole:1'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-    Route::get('/admin/reservations', [ReservationController::class, 'index'])->name('admin.reservation');
+        Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
-    Route::get('/admin/customers', [UserController::class, 'index'])->name('admin.customer');
-    Route::post('/admin/customers/store', [UserController::class, 'store'])->name('admin.customer.store');
-    Route::post('/admin/customers/update/{id}', [UserController::class, 'update'])->name('admin.customer.update');
-    Route::post('/admin/customers/destroy/{id}', [UserController::class, 'destroy'])->name('admin.customer.destroy');
+        Route::resource('/customers', UserController::class);
+        Route::resource('/rooms', RoomController::class);
+        Route::resource('/reservations', ReservationController::class);
+        Route::resource('/consoles', ConsoleController::class);
 
-    Route::get('/admin/rooms', [RoomController::class, 'index'])->name('admin.room');
-    Route::post('/admin/rooms/store', [RoomController::class, 'store'])->name('admin.room.store');
-    Route::post('/admin/rooms/update/{id}', [RoomController::class, 'update'])->name('admin.room.update');
-    Route::post('/admin/rooms/destroy/{id}', [RoomController::class, 'destroy'])->name('admin.room.destroy');
+        Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+        Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile/photo/update', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
+        Route::put('/profile/password', [ProfileController::class, 'changePassword'])->name('change-password');
 
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-    Route::put('/profile/photo/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
-    Route::delete('/profile/photo', [ProfileController::class, 'deletePhoto'])->name('profile.photo.delete');
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::post('/settings/logo', [SettingController::class, 'updateLogo'])->name('settings.update.logo');
+        Route::delete('/settings/logo', [SettingController::class, 'deleteLogo'])->name('settings.delete.logo');
+    });
 
-    Route::resource('/admin/consoles', ConsoleController::class, [
-        'names' => [
-            'index'   => 'console.index',
-            'create'  => 'console.create',
-            'store'   => 'console.store',
-            'show'    => 'console.show',
-            'edit'    => 'console.edit',
-            'update'  => 'console.update',
-            'destroy' => 'console.destroy',
-        ],
-    ]);
-    Route::get('/admin/settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::post('/admin/settings/logo', [SettingController::class, 'updateLogo'])->name('settings.update.logo');
-    Route::delete('/admin/settings/logo', [SettingController::class, 'deleteLogo'])->name('settings.delete.logo');
-});
-Route::group(['middleware' => ['checkrole:3']], function () {
-    Route::resource('/customer', UserController::class);
-});
+Route::middleware(['checkislogin', 'checkrole:2'])
+    ->prefix('resepsionist')
+    ->name('resepsionist.')
+    ->group(function () {
 
-Route::resource('/reservation', ReservationController::class);
-Route::resource('/admincustomer', UserController::class);
+        Route::get('/', function () {
+            return view('_resepsionist.index');
+        })->name('dashboard');
 
-Route::get('/404', function () {
-    return response()->view('guest.404', [], 404);
-})->name('404');
+        Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+        Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('/profile/password', [ProfileController::class, 'changePassword'])->name('change-password');
+    });
 
-Route::get('/auth/google', [AuthenticationController::class, 'redirectToGoogle'])->name('redirect.google');
-Route::get('/auth/google/callback', [AuthenticationController::class, 'handleGoogleCallback'])->name('google.callback');
+Route::middleware(['checkislogin', 'checkrole:3'])
+    ->prefix('customer')
+    ->name('customer.')
+    ->group(function () {
+
+        Route::get('/', function () {
+            return view('_customer.index');
+        })->name('dashboard');
+
+        Route::post('/reservation', [ReservationController::class, 'customerStore'])->name('reservation.store');
+
+        Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+        Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('/profile/password', [ProfileController::class, 'changePassword'])->name('change-password');
+    });

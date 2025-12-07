@@ -17,7 +17,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        return view('_admin.profile.index');
+        return view('_admin.profile');
     }
 
     /**
@@ -25,27 +25,27 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        $user = Auth::user();
+        $auth = Auth::user();
+        $user = User::findOrFail($auth->id);
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'jenis_kelamin' => 'nullable|string',
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'no_hp' => 'nullable|string|max:20',
-            'email' => 'required|email|unique:users,email,' . $user->id,
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
         ]);
 
-        $user1 = User::findOrfail($user->id);
+        $user->name = $request->input('name');
+        $user->username = $request->input('username');
+        $user->email = $request->input('email');
+        $user->no_hp = $request->input('no_hp');
+        $user->jenis_kelamin = $request->input('jenis_kelamin');
 
-        $user1->update([
-            'name' => $request->name,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'no_hp' => $request->no_hp,
-            'email' => $request->email,
-        ]);
+        $user->save();
 
-        return back()->with('success', 'Data profil berhasil diperbarui!');
+        return redirect()->back()->with('success', 'Profil berhasil diperbarui!');
     }
-
 
     /**
      * Update foto profil
@@ -120,28 +120,44 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update password
+     * GANTI PASSWORD
      */
-    public function updatePassword(Request $request)
+    public function changePassword(Request $request)
     {
         $auth = Auth::user();
-        $user = User::findOrfail($auth->id);
+        $user = User::findOrFail($auth->id);
 
+        // Validasi password baru
         $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'min:8', 'confirmed'],
-        ], [
-            'current_password.required' => 'Password saat ini wajib diisi',
-            'current_password.current_password' => 'Password saat ini tidak sesuai',
-            'password.required' => 'Password baru wajib diisi',
-            'password.min' => 'Password minimal 8 karakter',
-            'password.confirmed' => 'Konfirmasi password tidak cocok',
+            'new_password' => 'required|min:6|confirmed',
         ]);
+
+        // CASE 1 : USER GOOGLE BELUM PERNAH SET PASSWORD
+        if ($user->google_id && !$user->password_set) {
+
+            $user->update([
+                'password' => Hash::make($request->new_password),
+                'password_set' => true,     // tandai sudah punya password manual
+            ]);
+
+            return back()->with('success', 'Password berhasil dibuat!');
+        }
+
+        // CASE 2 : USER GOOGLE SUDAH SET PASSWORD / USER BIASA
+        $request->validate([
+            'current_password' => 'required',
+        ]);
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors([
+                'current_password' => 'Password lama salah!',
+            ]);
+        }
 
         $user->update([
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->new_password),
+            'password_set' => 1,
         ]);
 
-        return redirect()->back()->with('success', 'Password berhasil diubah!');
+        return back()->with('success', 'Password berhasil diperbarui!');
     }
 }

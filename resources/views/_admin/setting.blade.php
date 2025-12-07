@@ -22,7 +22,7 @@
                 <hr>
 
                 {{-- Form Upload --}}
-                <form action="{{ route('settings.update.logo') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.settings.update.logo') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <label class="form-label">Upload Logo Baru</label>
@@ -33,7 +33,7 @@
 
                 {{-- Tombol Hapus --}}
                 @if ($logo)
-                    <form action="{{ route('settings.delete.logo') }}" method="POST" class="mt-3">
+                    <form action="{{ route('admin.settings.delete.logo') }}" method="POST" class="mt-3">
                         @csrf
                         @method('DELETE')
 

@@ -77,7 +77,7 @@
                                                 </h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
-                                            <form action="{{ route('admin.customer.update', $data->id) }}" method="POST">
+                                            <form action="{{ route('admin.customers.store', $data->id) }}" method="POST">
                                                 @csrf
                                                 @method('POST')
                                                 <div class="modal-body">
@@ -160,7 +160,7 @@
                                 <div class="modal fade" id="deleteModal{{ $data->id }}" tabindex="-1"
                                     aria-labelledby="deleteModalLabel{{ $data->id }}" aria-hidden="true">
                                     <div class="modal-dialog">
-                                        <form action="{{ route('admin.customer.destroy', $data->id) }}" method="POST">
+                                        <form action="{{ route('admin.customers.destroy', $data->id) }}" method="POST">
                                             @csrf
                                             @method('POST')
                                             <div class="modal-content">

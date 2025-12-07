@@ -3,7 +3,7 @@
 @section('content')
 <h2>Data Customers</h2>
 
-<a href="{{ route('customers.create') }}" class="btn btn-primary mb-3">Tambah Customer</a>
+<a href="{{ route('admin.customers.create') }}" class="btn btn-primary mb-3">Tambah Customer</a>
 
 @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
@@ -29,10 +29,10 @@
             <td>{{ $c->no_hp }}</td>
             <td>{{ $c->email }}</td>
             <td>
-                <a href="{{ route('customers.edit', $c->cust_id) }}" class="btn btn-warning btn-sm">Edit</a>
-                <a href="{{ route('customers.show', $c->cust_id) }}" class="btn btn-info btn-sm">Detail</a>
+                <a href="{{ route('admin.customers.edit', $c->cust_id) }}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{{ route('admin.customers.show', $c->cust_id) }}" class="btn btn-info btn-sm">Detail</a>
 
-                <form action="{{ route('customers.destroy', $c->cust_id) }}" method="POST" class="d-inline">
+                <form action="{{ route('admin.customers.destroy', $c->cust_id) }}" method="POST" class="d-inline">
                     @csrf
                     @method('DELETE')
                     <button onclick="return confirm('Yakin ingin hapus?')" class="btn btn-danger btn-sm">Hapus</button>

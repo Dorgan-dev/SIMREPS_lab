@@ -29,8 +29,9 @@
                 <a href="{{ route('admin.profile') }}" class="sidebar-user">
                     <span class="sidebar-user-img">
                         <picture>
-                            <source srcset="./img/avatar/avatar-illustrated-01.webp" type="image/webp">
-                            <img src="./img/avatar/avatar-illustrated-01.png" alt="User name">
+                            <img src="{{ auth()->user()->profile_photo_url ?: '/path/to/default-avatar.jpg' }}"
+                                alt="Foto Profil" class="img-fluid rounded-circle w-100 h-100"
+                                style="object-fit: cover;">
                         </picture>
                     </span>
                     <div class="sidebar-user-info">
@@ -45,16 +46,15 @@
             <ul class="sidebar-body-menu">
                 {{-- Dashboard --}}
                 <li>
-                    <a class="{{ Request::routeIs('admin.dashboard') ? 'active' : '' }}"
-                       href="{{ route('admin.dashboard') }}">
+                    <a class="{{ Request::routeIs('admin') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
                         <span class="icon home" aria-hidden="true"></span>Dashboard
                     </a>
                 </li>
 
                 {{-- Bookings Data --}}
                 <li>
-                    <a class="show-cat-btn {{ Request::routeIs('admin.reservation*') || Request::routeIs('') || Request::routeIs('admin.history*') ? 'active' : '' }}"
-                       href="##">
+                    <a class="show-cat-btn {{ Request::routeIs('reservations.index*') || Request::routeIs('') || Request::routeIs('admin.history*') ? 'active' : '' }}"
+                        href="##">
                         <span class="icon document" aria-hidden="true"></span>Bookings Data
                         <span class="category__btn transparent-btn" title="Open list">
                             <span class="sr-only">Open list</span>
@@ -63,20 +63,18 @@
                     </a>
                     <ul class="cat-sub-menu">
                         <li>
-                            <a href=""
-                               class="{{ Request::routeIs('') ? 'active' : '' }}">
+                            <a href="" class="{{ Request::routeIs('') ? 'active' : '' }}">
                                 Request
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.reservation') }}"
-                               class="{{ Request::routeIs('admin.reservation*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.reservations.index') }}"
+                                class="{{ Request::routeIs('reservations.index*') ? 'active' : '' }}">
                                 Reservations
                             </a>
                         </li>
                         <li>
-                            <a href=""
-                               class="{{ Request::routeIs('admin.history*') ? 'active' : '' }}">
+                            <a href="" class="{{ Request::routeIs('admin.history*') ? 'active' : '' }}">
                                 History
                             </a>
                         </li>
@@ -85,8 +83,8 @@
 
                 {{-- Users --}}
                 <li>
-                    <a class="show-cat-btn {{ Request::routeIs('admin.customer*') || Request::routeIs('admin.staff*') ? 'active' : '' }}"
-                       href="##">
+                    <a class="show-cat-btn {{ Request::routeIs('customers.index*') || Request::routeIs('admin.staff*') ? 'active' : '' }}"
+                        href="##">
                         <span class="icon user-3" aria-hidden="true"></span>Users
                         <span class="category__btn transparent-btn" title="Open list">
                             <span class="sr-only">Open list</span>
@@ -95,14 +93,13 @@
                     </a>
                     <ul class="cat-sub-menu">
                         <li>
-                            <a href="{{ route('admin.customer') }}"
-                               class="{{ Request::routeIs('admin.customer*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.customers.index') }}"
+                                class="{{ Request::routeIs('customers.index*') ? 'active' : '' }}">
                                 Customers
                             </a>
                         </li>
                         <li>
-                            <a href=""
-                               class="{{ Request::routeIs('admin.staff*') ? 'active' : '' }}">
+                            <a href="" class="{{ Request::routeIs('admin.staff*') ? 'active' : '' }}">
                                 Staff
                             </a>
                         </li>
@@ -112,7 +109,7 @@
                 {{-- Consoles --}}
                 <li>
                     <a class="{{ Request::routeIs('console.*') ? 'active' : '' }}"
-                       href="{{ route('console.index') }}">
+                        href="{{ route('admin.consoles.index') }}">
                         <span class="icon fas fa-cogs" aria-hidden="true"></span>Consoles
                     </a>
                 </li>
@@ -120,15 +117,14 @@
                 {{-- Rooms --}}
                 <li>
                     <a class="{{ Request::routeIs('admin.room*') ? 'active' : '' }}"
-                       href="{{ route('admin.room') }}">
+                        href="{{ route('admin.rooms.index') }}">
                         <span class="icon fas fa-door-open" aria-hidden="true"></span>Rooms
                     </a>
                 </li>
 
                 {{-- Media --}}
                 <li>
-                    <a class="show-cat-btn {{ Request::routeIs('admin.media*') ? 'active' : '' }}"
-                       href="##">
+                    <a class="show-cat-btn {{ Request::routeIs('admin.media*') ? 'active' : '' }}" href="##">
                         <span class="icon image" aria-hidden="true"></span>Media
                         <span class="category__btn transparent-btn" title="Open list">
                             <span class="sr-only">Open list</span>
@@ -137,14 +133,12 @@
                     </a>
                     <ul class="cat-sub-menu">
                         <li>
-                            <a href=""
-                               class="{{ Request::routeIs('admin.media.index') ? 'active' : '' }}">
+                            <a href="" class="{{ Request::routeIs('admin.media.index') ? 'active' : '' }}">
                                 Media-01
                             </a>
                         </li>
                         <li>
-                            <a href=""
-                               class="{{ Request::routeIs('admin.media.gallery') ? 'active' : '' }}">
+                            <a href="" class="{{ Request::routeIs('admin.media.gallery') ? 'active' : '' }}">
                                 Media-02
                             </a>
                         </li>
@@ -153,8 +147,7 @@
 
                 {{-- Pages --}}
                 <li>
-                    <a class="show-cat-btn {{ Request::routeIs('admin.pages*') ? 'active' : '' }}"
-                       href="##">
+                    <a class="show-cat-btn {{ Request::routeIs('admin.pages*') ? 'active' : '' }}" href="##">
                         <span class="icon paper" aria-hidden="true"></span>Pages
                         <span class="category__btn transparent-btn" title="Open list">
                             <span class="sr-only">Open list</span>
@@ -163,14 +156,12 @@
                     </a>
                     <ul class="cat-sub-menu">
                         <li>
-                            <a href=""
-                               class="{{ Request::routeIs('admin.pages.index') ? 'active' : '' }}">
+                            <a href="" class="{{ Request::routeIs('admin.pages.index') ? 'active' : '' }}">
                                 All pages
                             </a>
                         </li>
                         <li>
-                            <a href=""
-                               class="{{ Request::routeIs('admin.pages.create') ? 'active' : '' }}">
+                            <a href="" class="{{ Request::routeIs('admin.pages.create') ? 'active' : '' }}">
                                 Add new page
                             </a>
                         </li>
@@ -179,8 +170,7 @@
 
                 {{-- Comments --}}
                 <li>
-                    <a href=""
-                       class="{{ Request::routeIs('admin.comments*') ? 'active' : '' }}">
+                    <a href="" class="{{ Request::routeIs('admin.comments*') ? 'active' : '' }}">
                         <span class="icon message" aria-hidden="true"></span>
                         Comments
                     </a>
@@ -192,16 +182,15 @@
             <ul class="sidebar-body-menu">
                 {{-- Appearance --}}
                 <li>
-                    <a href=""
-                       class="{{ Request::routeIs('admin.appearance*') ? 'active' : '' }}">
+                    <a href="" class="{{ Request::routeIs('admin.appearance*') ? 'active' : '' }}">
                         <span class="icon edit" aria-hidden="true"></span>Appearance
                     </a>
                 </li>
 
                 {{-- Settings --}}
                 <li>
-                    <a href="{{ route('settings.index') }}"
-                       class="{{ Request::routeIs('settings.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.settings.index') }}"
+                        class="{{ Request::routeIs('settings.*') ? 'active' : '' }}">
                         <span class="icon setting" aria-hidden="true"></span>Settings
                     </a>
                 </li>

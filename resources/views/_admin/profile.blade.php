@@ -57,9 +57,9 @@
                         </h5>
                     </div>
                     <div class="card-body p-4">
-                        <form action="{{ route('profile.update') }}" method="POST" id="profileForm">
+                        <form action="{{ route('admin.profile.update') }}" method="POST" id="profileForm">
                             @csrf
-                            @method('PUT')
+                            @method('POST')
 
                             <div class="row g-4">
                                 <!-- Nama Lengkap -->
@@ -177,7 +177,7 @@
             <div
                 class="modal-content {{ config('app.env') == 'production' ? 'bg-dark text-light' : 'bg-white text-dark' }}">
 
-                <form action="{{ route('profile.photo') }}" method="POST" enctype="multipart/form-data"
+                <form action="{{ route('admin.profile.photo.update') }}" method="POST" enctype="multipart/form-data"
                     id="photoUploadForm">
                     @csrf
 
