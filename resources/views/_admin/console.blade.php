@@ -11,7 +11,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">Console Table</h6>
 
                     <div class="d-flex align-items-center gap-2">
-                        <form method="GET" action="{{ route('console.index') }}">
+                        <form method="GET" action="{{ route('admin.consoles.index') }}">
                             <select name="kategori" onchange="this.form.submit()" class="form-select">
                                 <option value="">Semua Kategori</option>
                                 <option value="PS 3" {{ request('kategori') == 'PS3' ? 'selected' : '' }}>PS 3</option>
@@ -83,7 +83,7 @@
                                 {{-- Modal Edit Console --}}
                                 <div class="modal fade" id="editModal{{ $item->console_id }}" tabindex="-1">
                                     <div class="modal-dialog">
-                                        <form action="{{ route('console.update', $item->console_id) }}" method="POST">
+                                        <form action="{{ route('admin.consoles.update', $item->console_id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
 
@@ -158,7 +158,7 @@
                                 {{-- Modal Delete Console --}}
                                 <div class="modal fade" id="deleteModal{{ $item->console_id }}" tabindex="-1">
                                     <div class="modal-dialog">
-                                        <form action="{{ route('console.destroy', $item->console_id) }}" method="POST">
+                                        <form action="{{ route('admin.consoles.destroy', $item->console_id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
 
@@ -205,7 +205,7 @@
         {{-- Modal Tambah Console --}}
         <div class="modal fade" id="tambahModal" tabindex="-1">
             <div class="modal-dialog">
-                <form action="{{ route('console.store') }}" method="POST">
+                <form action="{{ route('admin.consoles.store') }}" method="POST">
                     @csrf
 
                     <div class="modal-content">

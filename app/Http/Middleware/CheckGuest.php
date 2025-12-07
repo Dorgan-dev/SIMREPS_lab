@@ -21,7 +21,7 @@ class CheckGuest
                 return redirect()->route('user.reseptionis');
             }
 
-            return redirect()->route('customer.index');
+            return redirect()->route('customer.dashboard');
         }
 
         // Jika user belum login → lanjut ke halaman login

@@ -89,8 +89,8 @@
                     <span class="sr-only">My profile</span>
                     <span class="nav-user-img">
                         <picture>
-                            <source srcset="./img/avatar/avatar-illustrated-02.webp" type="image/webp">
-                            <img src="./img/avatar/avatar-illustrated-02.png" alt="User name">
+                            <img src="{{ auth()->user()->profile_photo_url }}" alt="User photo"
+                                style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
                         </picture>
                     </span>
                 </button>
