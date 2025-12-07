@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'username',
         'email',
-        'profile_photo',  // ← PASTIKAN INI ADA
+        'profile_photo', 
         'jenis_kelamin',
         'no_hp',
         'role',
@@ -46,7 +49,7 @@ class User extends Authenticatable
         $bg = $this->jenis_kelamin === 'Perempuan' ? 'FF69B4' : '3498db';
         return "https://ui-avatars.com/api/?name={$name}&background={$bg}&color=fff&size=200";
     }
-    
+
     /**
      * Hapus foto lama saat update
      */
