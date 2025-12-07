@@ -29,9 +29,8 @@
                 <a href="{{ route('admin.profile') }}" class="sidebar-user">
                     <span class="sidebar-user-img">
                         <picture>
-                            <img src="{{ auth()->user()->profile_photo_url ?: '/path/to/default-avatar.jpg' }}"
-                                alt="Foto Profil" class="img-fluid rounded-circle w-100 h-100"
-                                style="object-fit: cover;">
+                            <img src="{{ auth()->user()->profile_photo_url }}" alt="User photo"
+                                style="width:55px; height:55px; border-radius:50%; object-fit:cover;">
                         </picture>
                     </span>
                     <div class="sidebar-user-info">

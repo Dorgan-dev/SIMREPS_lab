@@ -124,7 +124,7 @@ class AuthenticationController extends Controller
         return match ($role) {
             1 => redirect()->route('admin.dashboard'),  // Admin
             2 => redirect()->route('admin.dashboard'),  // Admin sementara
-            3 => redirect()->route('customer.index'),  // Customer
+            3 => redirect()->route('customer.dashboard'),  // Customer
             default => redirect()->route('home'),  // Halaman default jika tidak ada role yang dikenali
         };
     }

@@ -45,7 +45,7 @@ Route::middleware(['checkislogin', 'checkrole:1'])
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::post('/profile/photo/update', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
-        Route::put('/profile/password', [ProfileController::class, 'changePassword'])->name('change-password');
+        Route::post('/profile/password', [ProfileController::class, 'changePassword'])->name('change-password');
 
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
         Route::post('/settings/logo', [SettingController::class, 'updateLogo'])->name('settings.update.logo');
