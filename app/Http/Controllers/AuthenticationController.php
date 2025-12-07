@@ -3,31 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthenticationController extends Controller
 {
     public function index()
     {
+        // Jika pengguna sudah login, redirect ke halaman sesuai dengan role
         if (Auth::check()) {
-
-            if (Auth::user()->role == 1) {
-                return redirect()->route('admin');
-            }
-
-            if (Auth::user()->role == 2) {
-                return redirect()->route('user.reseptionis');
-            }
-
-            return redirect()->route('customer.index');
+            return $this->redirectByRole(Auth::user()->role);
         }
+
         return view('guest.login');
     }
 
     /**
-     * Proses Login
+     * LOGIN MANUAL
      */
     public function login(Request $request)
     {
@@ -41,27 +36,19 @@ class AuthenticationController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // Jika user masuk karena diarahkan middleware (intended), gunakan itu
-            if (session('url.intended')) {
-                return redirect()->intended();
-            }
-
-            // Kalau tidak ada intended URL (misalnya login manual),
-            // arahkan sesuai role
-            return match (Auth::user()->role) {
-                1 => redirect()->route('admin'),
-                2 => redirect()->route('resepsionis.index'),
-                default => redirect()->route('customer.index'),
-            };
+            return $this->redirectByRole(Auth::user()->role);
         }
 
-        return back()->with('error', 'Username atau password salah.')->withInput();
+        return back()->with('error', 'Username atau password salah.');
     }
+
+
     /**
-     * Proses Register
+     * REGISTER
      */
     public function register(Request $request)
     {
+        // Validasi input untuk registrasi
         $request->validate([
             'name'          => 'required|string|max:255',
             'username'      => 'required|string|max:255|unique:users,username',
@@ -71,6 +58,7 @@ class AuthenticationController extends Controller
             'password'      => 'required|string|min:8|confirmed',
         ]);
 
+        // Membuat pengguna baru
         User::create([
             'name'          => $request->name,
             'username'      => $request->username,
@@ -78,18 +66,75 @@ class AuthenticationController extends Controller
             'no_hp'         => $request->no_hp,
             'jenis_kelamin' => $request->jenis_kelamin,
             'password'      => Hash::make($request->password),
-            'role'          => 3
+            'role'          => 3  // Default role untuk customer
         ]);
 
-        // 3. Arahkan ke halaman login
-        return redirect()->route('home.login')->with('success', 'Akun berhasil dibuat! Silahkan login untuk melanjutkan.');
+        // Redirect ke halaman login dengan pesan sukses
+        return redirect()->route('home.login')->with('success', 'Akun berhasil dibuat! Silahkan login.');
     }
 
     /**
-     * Logout
+     * GOOGLE LOGIN - Redirect ke Google
+     */
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    /**
+     * GOOGLE CALLBACK - Menangani callback dari Google
+     */
+    public function handleGoogleCallback()
+    {
+        $googleUser = Socialite::driver('google')->user();
+
+        // Cari user berdasarkan email
+        $user = User::where('email', $googleUser->email)->first();
+
+        if (!$user) {
+            $user = User::create([
+                'name'     => $googleUser->name,
+                'email'    => $googleUser->email,
+                'username' => explode('@', $googleUser->email)[0],
+                'password' => Hash::make(Str::random(16)),
+                'google_id' => $googleUser->id,     // penting!
+                'password_set' => false,            // tandai: belum set password manual
+                'role'     => 3,
+            ]);
+        } else {
+            // Update google_id kalau kosong
+            if (!$user->google_id) {
+                $user->google_id = $googleUser->id;
+                $user->save();
+            }
+        }
+
+        Auth::login($user);
+
+        return $this->redirectByRole($user->role);
+    }
+
+
+
+    /**
+     * FUNGSI BANTUAN - Redirect berdasarkan role pengguna
+     */
+    private function redirectByRole($role)
+    {
+        return match ($role) {
+            1 => redirect()->route('admin.dashboard'),  // Admin
+            2 => redirect()->route('admin.dashboard'),  // Admin sementara
+            3 => redirect()->route('customer.index'),  // Customer
+            default => redirect()->route('home'),  // Halaman default jika tidak ada role yang dikenali
+        };
+    }
+
+    /**
+     * LOGOUT
      */
     public function logout()
     {
+        // Logout pengguna dan invalidate session
         Auth::logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();

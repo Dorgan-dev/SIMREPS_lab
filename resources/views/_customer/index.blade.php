@@ -397,13 +397,17 @@
                             </a>
                         </li>
                         {{-- https://github.com/zuramai/mazer#donate --}}
-                        <li class="sidebar-item  ">
-                            <a href="{{ route('auth.logout') }}" class='sidebar-link'>
-                                <i class="bi bi-cash"></i>
-                                <span>Logout</span>
-                            </a>
-                        </li>
+<li class="sidebar-item">
+    <a href="#" class="sidebar-link"
+       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Logout</span>
+    </a>
 
+    <form id="logout-form" action="{{ route('auth.logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
+</li>
                     </ul>
                 </div>
                 <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>

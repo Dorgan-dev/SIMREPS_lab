@@ -5,7 +5,7 @@
 <meta name="keywords" content="">
 
 <!-- Favicons -->
-<link href="{{ asset('guest/img/favicon.png') }}" rel="icon">
+<link rel="shortcut icon" href="{{ asset('img/SIMREPS_logo.png') }}" type="image/x-icon">
 <link href="{{ asset('guest/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
 
 <!-- Fonts -->

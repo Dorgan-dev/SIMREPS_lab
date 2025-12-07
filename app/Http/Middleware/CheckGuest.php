@@ -14,7 +14,7 @@ class CheckGuest
         if (Auth::check()) {
 
             if (Auth::user()->role == 1) {
-                return redirect()->route('admin');
+                return redirect()->route('admin.dashboard');
             }
 
             if (Auth::user()->role == 2) {

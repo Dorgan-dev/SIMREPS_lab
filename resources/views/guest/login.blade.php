@@ -6,80 +6,77 @@
         <div class="container py-5">
             <div class="row justify-content-center">
 
-                {{-- Kolom untuk menampung form login (Pusatkan di tengah) --}}
                 <div class="col-lg-5 col-md-8">
 
-                    {{-- Card atau Box Login --}}
-                    <div class="login-box bg-white p-4 p-md-5 shadow-lg rounded" data-aos="fade-up">
+                    <div class="login-box bg-white p-2 p-md-5 shadow-lg rounded" data-aos="fade-up">
 
-                        <h2 class="text-center mb-4">Masuk ke SIMREPS</h2>
+                        <div class="text-center mb-4">
+                            <img src="{{ asset(getSetting('site_logo')) }}" alt="Logo SIMREPS"
+                                style="max-width:140px;">
+                        </div>
+
                         <p class="text-center text-muted mb-4">Silakan masukkan detail akun Anda.</p>
 
-                        {{-- Formulir Login --}}
-                        <form action="{{ route('auth.login') }}" method="POST" class="php-email-form">
-                            @csrf {{-- Token keamanan Laravel wajib --}}
+                        {{-- Form Login --}}
+                        <form action="{{ route('auth.login') }}" method="POST">
+                            @csrf
 
-                            {{-- Input Email --}}
-                            {{-- <div class="form-group mb-3">
-                                <label for="email">Alamat Email</label>
-                                <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required autocomplete="email" autofocus>
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div> --}}
-
+                            {{-- Username --}}
                             <div class="mb-4">
-                                <label for="username" class="form-label">Username</label>
+                                <label for="username" class="form-label fw-semibold">Username</label>
                                 <input type="text" name="username" class="form-control" id="username"
-                                    placeholder="Enter your username" value="{{ old('username') }}">
+                                    placeholder="Masukkan username" value="{{ old('username') }}">
                             </div>
 
-                            {{-- Input Password --}}
-                            <div class="form-group mb-3">
-                                <label for="password">Kata Sandi</label>
+                            {{-- Password --}}
+                            <div class="mb-4">
+                                <label for="password" class="form-label fw-semibold">Kata Sandi</label>
                                 <input type="password" name="password" id="password"
-                                    class="form-control @error('password') is-invalid @enderror" required
-                                    autocomplete="current-password">
+                                    class="form-control @error('password') is-invalid @enderror"
+                                    placeholder="Masukkan kata sandi" required>
+
                                 @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                    <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
                                 @enderror
                             </div>
 
-                            {{-- Remember Me & Lupa Password --}}
-                            <div class="form-group d-flex justify-content-between align-items-center mb-4">
+                            {{-- Remember + Forgot --}}
+                            <div class="d-flex justify-content-between align-items-center mb-4">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="remember" id="remember"
                                         {{ old('remember') ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="remember">
-                                        Ingat Saya
-                                    </label>
+                                    <label class="form-check-label" for="remember">Ingat Saya</label>
                                 </div>
-                                @if (Route::has('password.request'))
-                                    <a class="btn-link" href="">
-                                        Lupa Kata Sandi?
-                                    </a>
-                                @endif
+
+                                <a href="#" class="text-decoration-none">Lupa Kata Sandi?</a>
                             </div>
 
+                            {{-- Login Google --}}
+                            <a href="{{ route('redirect.google') }}"
+                                class="btn btn-light border d-flex align-items-center justify-content-center gap-2 w-100 mb-3"
+                                style="font-weight: 500;">
+
+                                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                                    alt="Google Logo" width="22" height="22">
+
+                                Login dengan Google
+                            </a>
+
                             {{-- Tombol Login --}}
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary btn-getstarted">
-                                    Masuk
-                                </button>
-                            </div>
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                                Masuk
+                            </button>
+
                         </form>
 
                         <hr class="my-4">
 
-                        {{-- Tautan Registrasi --}}
+                        {{-- Registrasi --}}
                         <div class="text-center">
                             <p class="mb-0">Belum punya akun?
-                                <a href="{{ route('home.register') }}" class="fw-bold text-decoration-none">Daftar
-                                    Sekarang</a>
+                                <a href="{{ route('home.register') }}" class="fw-bold text-decoration-none">
+                                    Daftar Sekarang
+                                </a>
                             </p>
                         </div>
 
@@ -90,5 +87,4 @@
         </div>
 
     </main>
-    
 @endsection

@@ -2,69 +2,105 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Tampilkan daftar customer (role = 3)
     public function index()
     {
-        $customers = Customer::all();
         if (!Auth::check()) {
             return view('guest.login');
         }
-        return view('_customer.index', compact('customers'));
+        return view('_customer.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Halaman form tambah customer
     public function create()
     {
-        //
+        return view('customers.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Simpan customer baru
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name'          => 'required|string|max:255',
+            'username'      => 'required|string|max:255|unique:users,username',
+            'email'         => 'required|string|email|max:255|unique:users,email',
+            'no_hp'         => 'nullable|string|max:15',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            'password'      => 'required|string|min:8|confirmed',
+        ]);
+
+        User::create([
+            'name'          => $request->name,
+            'username'      => $request->username,
+            'email'         => $request->email,
+            'no_hp'         => $request->no_hp,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'password'      => Hash::make($request->password),
+            'role'          => 3, // customer
+        ]);
+
+        return redirect()->back()->with('success', 'Akun berhasil dibuat!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Detail customer
+    public function show($id)
     {
-        //
+        $customer = User::where('role', 3)->findOrFail($id);
+        return view('customers.show', compact('customer'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Halaman edit customer
+    public function edit($id)
     {
-        //
+        $customer = User::where('role', 3)->findOrFail($id);
+        return view('customers.edit', compact('customer'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Update customer
+    public function update(Request $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'name'          => 'required|string|max:255',
+            'username'      => 'required|string|max:255|unique:users,username,' . $id,
+            'email'         => 'required|string|email|max:255|unique:users,email,' . $id,
+            'no_hp'         => 'nullable|string|max:15',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            'role'          => 'required|integer|in:1,2,3',
+            'password'      => 'nullable|string|min:8|confirmed',
+        ]);
+
+        $user->name          = $request->name;
+        $user->username      = $request->username;
+        $user->email         = $request->email;
+        $user->no_hp         = $request->no_hp;
+        $user->jenis_kelamin = $request->jenis_kelamin;
+        $user->role = $request->role;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return redirect()->back()->with('success', 'Akun pengguna berhasil diperbarui!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Hapus customer
+    public function destroy($id)
     {
-        //
+        $user = User::where('role', 3)->findOrFail($id);
+        $user->delete();
+
+        return redirect()->back()->with('success', 'Akun Customer berhasil dihapus');
     }
 }

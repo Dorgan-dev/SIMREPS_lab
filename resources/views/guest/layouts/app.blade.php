@@ -74,9 +74,8 @@
 
                 messageElement.innerHTML = successMessage;
 
-                // WARNA SUCCESS
                 header.classList.add('bg-success');
-                title.classList.add('text-white'); // <- perbaikan penting
+                title.classList.add('text-white');
                 button.classList.add('btn-success');
                 footer.classList.add('border-success');
                 title.innerHTML = "Berhasil";
@@ -87,9 +86,8 @@
 
                 messageElement.innerHTML = errorMessage;
 
-                // WARNA ERROR
                 header.classList.add('bg-danger');
-                title.classList.add('text-white'); // <- perbaikan penting
+                title.classList.add('text-white');
                 button.classList.add('btn-danger');
                 footer.classList.add('border-danger');
                 title.innerHTML = "Gagal";

@@ -11,11 +11,10 @@
             <li>
                 <a href="{{ route('home') }}" class="{{ request()->is('/') ? 'active' : '' }}">Beranda</a>
             </li>
-
             <li>
-                <a href="{{ route('home.about') }}" class="{{ request()->is('about') ? 'active' : '' }}">Tentang SIMREPS</a>
+                <a href="{{ route('home.about') }}" class="{{ request()->is('about') ? 'active' : '' }}">Tentang
+                    SIMREPS</a>
             </li>
-
             <li class="dropdown">
                 <a href="#">
                     <span>Ketersediaan</span>
@@ -28,9 +27,9 @@
                     <li><a href="#">Reservasi Mendatang</a></li>
                 </ul>
             </li>
-
             <li>
-                <a href="{{ route('home.contact') }}" class="{{ request()->is('contact') ? 'active' : '' }}">Kontak & Bantuan</a>
+                <a href="{{ route('home.contact') }}" class="{{ request()->is('contact') ? 'active' : '' }}">Kontak &
+                    Bantuan</a>
             </li>
         </ul>
 
@@ -47,13 +46,15 @@
     @auth
         <!-- Dropdown Profil untuk pengguna yang sudah login -->
         <li class="dropdown" style="list-style: none; margin-left: 20px;">
-            <a href="#" class="dropdown-toggle d-flex align-items-center" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a href="#" class="dropdown-toggle d-flex align-items-center" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
                 <i class="bi bi-person-circle bg-shapes" style="font-size: 32px; color: #ffffff;"></i>
             </a>
-
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{{ route('auth')}}">Dashboard</a></li>
-                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{ route('auth') }}">Dashboard</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
                 <li>
                     <a class="dropdown-item" href="{{ route('auth.logout') }}"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
