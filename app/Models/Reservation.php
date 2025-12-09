@@ -34,4 +34,8 @@ class Reservation extends Model
         }
         return $query;
     }
+    public function console()
+    {
+        return $this->belongsTo(Console::class, 'console_id');
+    }
 }

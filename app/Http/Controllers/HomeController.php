@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Room;
 use App\Models\Console;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -16,10 +18,22 @@ class HomeController extends Controller
         $rooms = Room::latest()->limit(3)->get();
         return view('guest.index', compact('rooms'));
     }
+    public function all()
+    {
+        $reservations = Reservation::with(['console.room'])
+            ->orderBy('tanggal_bermain', 'desc')
+            ->get();
+
+        return view('guest.reservation-today', compact('reservations'));
+    }
+
 
     public function rooms()
     {
-        $rooms = Room::latest()->get(); // SEMUA DATA
+        $rooms = Room::with(['images', 'consoles.reservations'])
+            ->paginate(6)
+            ->withQueryString();
+
         return view('guest.rooms', compact('rooms'));
     }
 
@@ -55,6 +69,27 @@ class HomeController extends Controller
         return view('guest.console', compact('consoles'));
     }
 
+    // JADWAL HARI INI
+    public function today()
+    {
+        $reservations = Reservation::whereDate('tanggal_bermain', Carbon::today())
+            ->with(['console.room'])
+            ->orderBy('waktu_mulai', 'asc')
+            ->get();
+
+        return view('guest.reservation-today', compact('reservations'));
+    }
+
+    // RESERVASI MENDATANG
+    public function upcoming()
+    {
+        $reservations = Reservation::whereDate('tanggal_bermain', '>', Carbon::today())
+            ->with(['console.room'])
+            ->orderBy('tanggal_bermain', 'asc')
+            ->get();
+
+        return view('guest.reservation-upcoming', compact('reservations'));
+    }
 
     /**
      * Show the form for creating a new resource.

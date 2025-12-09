@@ -46,8 +46,9 @@ class Console extends Model
     {
         return $this->morphMany(Image::class, 'imageable');
     }
+
     public function reservations()
     {
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Reservation::class, 'console_id');
     }
 }

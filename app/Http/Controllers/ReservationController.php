@@ -129,6 +129,32 @@ class ReservationController extends Controller
         return back()->with('success', 'Data reservasi berhasil diperbarui!');
     }
 
+    // ✅ JADWAL HARI INI
+    public function today()
+    {
+        $today = Carbon::today();
+
+        $reservations = Reservation::with(['console.room'])
+            ->whereDate('waktu_mulai', $today)
+            ->orderBy('waktu_mulai', 'asc')
+            ->get();
+
+        return view('guest.reservations-today', compact('reservations'));
+    }
+
+    // ✅ RESERVASI MENDATANG
+    public function upcoming()
+    {
+        $today = Carbon::today();
+
+        $reservations = Reservation::with(['console.room'])
+            ->whereDate('waktu_mulai', '>', $today)
+            ->orderBy('waktu_mulai', 'asc')
+            ->get();
+
+        return view('guest.reservations-upcoming', compact('reservations'));
+    }
+
     // ============================
     // ADMIN - DELETE
     // ============================

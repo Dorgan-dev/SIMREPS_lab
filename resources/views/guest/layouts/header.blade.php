@@ -23,8 +23,8 @@
                 <ul>
                     <li><a href="{{ route('home.rooms') }}">Play Room</a></li>
                     <li><a href="{{ route('home.consoles') }}">Console</a></li>
-                    <li><a href="#">Jadwal Hari Ini</a></li>
-                    <li><a href="#">Reservasi Mendatang</a></li>
+                    <li><a href="{{ route('reservation.today') }}">Jadwal Hari Ini</a></li>
+                    <li><a href="{{ route('reservation.upcoming') }}">Reservasi Mendatang</a></li>
                 </ul>
             </li>
             <li>
