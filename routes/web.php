@@ -50,6 +50,25 @@ Route::middleware(['checkislogin', 'checkrole:1'])
         Route::resource('/reservations', ReservationController::class);
         Route::resource('/consoles', ConsoleController::class);
 
+        // ✅ REQUEST (PENDING)
+        Route::get('/reservations-pending', [ReservationController::class, 'pending'])
+            ->name('reservations.pending');
+
+        Route::post('/reservations/{id}/approve', [ReservationController::class, 'approve'])
+            ->name('reservations.approve');
+
+        Route::post('/reservations/{id}/reject', [ReservationController::class, 'reject'])
+            ->name('reservations.reject');
+
+        // ✅ ONGOING
+        Route::get('/reservations-ongoing', [ReservationController::class, 'running'])
+            ->name('reservations.ongoing');
+
+        // ✅ HISTORY (ALL)
+        Route::get('/reservations-history', [ReservationController::class, 'history'])
+            ->name('reservations.history');
+
+
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::post('/profile/photo/update', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');

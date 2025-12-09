@@ -56,13 +56,22 @@
                         </span>
                     </a>
                     <ul class="cat-sub-menu">
-                        <li>
-                            <a href=""
-                                class="{{ Request::routeIs('reservations.index*') ? 'active' : '' }}">Pemesanan</a>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.reservations.pending') }}" class="nav-link">
+                                <i class="bi bi-inbox"></i> Pengajuan
+                            </a>
                         </li>
-                        <li>
-                            <a href=""
-                                class="{{ Request::routeIs('admin.history*') ? 'active' : '' }}">Riwayat</a>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.reservations.ongoing') }}" class="nav-link">
+                                <i class="bi bi-play-circle"></i> Sedang Berjalan
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.reservations.history') }}" class="nav-link">
+                                <i class="bi bi-clock-history"></i> Riwayat Pesanan
+                            </a>
                         </li>
                     </ul>
                 </li>

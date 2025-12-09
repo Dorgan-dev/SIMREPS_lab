@@ -101,19 +101,6 @@
             <div class="row">
                 <!-- Chart & Tabel Reservasi Terbaru -->
                 <div class="col-lg-9">
-                    <!-- Grafik Pendapatan -->
-                    <div class="chart mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3 px-3 pt-3">
-                            <h5 class="mb-0">Grafik Pendapatan 7 Hari Terakhir</h5>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-outline-primary active">7 Hari</button>
-                                <button type="button" class="btn btn-outline-primary">30 Hari</button>
-                                <button type="button" class="btn btn-outline-primary">1 Tahun</button>
-                            </div>
-                        </div>
-                        <canvas id="myChart" aria-label="Revenue statistics" role="img"></canvas>
-                    </div>
-
                     <!-- Tabel Reservasi Terbaru -->
                     <div class="users-table table-wrapper">
                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -141,30 +128,30 @@
                                         <td>
                                             <div class="pages-table-img">
                                                 <picture>
-                                                    <img src="{{ $reservation->user->profile_photo_url ?? asset('img/avatar/default.png') }}"
-                                                        alt="{{ $reservation->user->name }}">
+                                                    <img src="{{ $reservation->customer->profile_photo_url ?? asset('img/avatar/default.png') }}"
+                                                        alt="{{ $reservation->customer->name ?? 'Customer' }}">
                                                 </picture>
-                                                {{ $reservation->user->name }}
+                                                {{ $reservation->customer->name ?? '-' }}
                                             </div>
                                         </td>
                                         <td>
                                             <span class="badge bg-info">
                                                 <i data-feather="monitor" style="width: 14px; height: 14px;"></i>
-                                                PS {{ $reservation->playstation->nama ?? '-' }}
+                                                PS {{ $reservation->console->nama_unit ?? '-' }}
                                             </span>
                                         </td>
                                         <td>{{ $reservation->paket->nama ?? '-' }}</td>
                                         <td>{{ $reservation->waktu_mulai ? \Carbon\Carbon::parse($reservation->waktu_mulai)->format('H:i, d/m/Y') : '-' }}
                                         </td>
                                         <td>
-                                            @if ($reservation->status == 'active')
-                                                <span class="badge-active">Sedang Bermain</span>
-                                            @elseif($reservation->status == 'pending')
-                                                <span class="badge-pending">Menunggu</span>
-                                            @elseif($reservation->status == 'completed')
+                                            @if ($reservation->status == 'Dipesan')
+                                                <span class="badge bg-warning">Menunggu</span>
+                                            @elseif ($reservation->status == 'Berlangsung')
+                                                <span class="badge bg-primary">Berlangsung</span>
+                                            @elseif ($reservation->status == 'Selesai')
                                                 <span class="badge bg-success">Selesai</span>
                                             @else
-                                                <span class="badge bg-secondary">{{ $reservation->status }}</span>
+                                                <span class="badge bg-danger">Dibatalkan</span>
                                             @endif
                                         </td>
                                         <td>
@@ -175,15 +162,12 @@
                                                     <i data-feather="more-horizontal" aria-hidden="true"></i>
                                                 </button>
                                                 <ul class="users-item-dropdown dropdown">
-                                                    <li><a
-                                                            href="">Detail</a>
+                                                    <li><a href="">Detail</a>
                                                     </li>
-                                                    <li><a
-                                                            href="">Edit</a>
+                                                    <li><a href="">Edit</a>
                                                     </li>
                                                     @if ($reservation->status == 'active')
-                                                        <li><a
-                                                                href="">Selesaikan</a>
+                                                        <li><a href="">Selesaikan</a>
                                                         </li>
                                                     @endif
                                                 </ul>
@@ -245,30 +229,36 @@
                             @endforelse
                         </ul>
                         <div class="mt-3 text-center">
-                            <a href=""
-                                class="btn btn-sm btn-outline-primary w-100">
+                            <a href="" class="btn btn-sm btn-outline-primary w-100">
                                 <i data-feather="settings" style="width: 14px; height: 14px;"></i> Kelola PlayStation
                             </a>
                         </div>
                     </article>
 
-                    <!-- Chart Donut - Statistik Status -->
-                    <article class="customers-wrapper mb-4">
-                        <h5 class="text-center mb-3">Distribusi Status PS</h5>
-                        <canvas id="customersChart" aria-label="PlayStation status statistics" role="img"></canvas>
-                        <div class="text-center mt-3">
-                            <div class="d-flex justify-content-around">
-                                <div>
+                    <!-- ✅ DONUT CHART STATUS PLAYSTATION -->
+                    <article class="white-block mb-4">
+                        <div class="top-cat-title text-center">
+                            <h3>Status PlayStation</h3>
+                            <p>Total {{ $totalPS ?? 0 }} Unit</p>
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                            <canvas id="customersChart" width="220" height="220"></canvas>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <div class="row">
+                                <div class="col-4">
                                     <small class="text-muted d-block">Tersedia</small>
-                                    <strong class="text-success">{{ $availablePS ?? 0 }}</strong>
+                                    <strong class="text-success fs-5">{{ $availablePS ?? 0 }}</strong>
                                 </div>
-                                <div>
+                                <div class="col-4">
                                     <small class="text-muted d-block">Digunakan</small>
-                                    <strong class="text-warning">{{ $activePS ?? 0 }}</strong>
+                                    <strong class="text-warning fs-5">{{ $activePS ?? 0 }}</strong>
                                 </div>
-                                <div>
+                                <div class="col-4">
                                     <small class="text-muted d-block">Maintenance</small>
-                                    <strong class="text-danger">{{ $maintenancePS ?? 0 }}</strong>
+                                    <strong class="text-danger fs-5">{{ $maintenancePS ?? 0 }}</strong>
                                 </div>
                             </div>
                         </div>
@@ -400,7 +390,7 @@
                 new Chart(statusCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Tersedia', 'Digunakan', 'Maintenance'],
+                        labels: ['Tersedia', 'Dipesan', 'Perbaikan'],
                         datasets: [{
                             data: [
                                 {{ $availablePS ?? 0 }},
@@ -408,21 +398,31 @@
                                 {{ $maintenancePS ?? 0 }}
                             ],
                             backgroundColor: [
-                                'rgb(34, 197, 94)',
-                                'rgb(251, 146, 60)',
-                                'rgb(239, 68, 68)'
+                                '#22c55e', // hijau
+                                '#f59e0b', // kuning
+                                '#ef4444' // merah
                             ],
-                            borderWidth: 2,
-                            borderColor: '#fff'
+                            borderWidth: 3,
+                            borderColor: '#ffffff'
                         }]
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: true,
+                        cutout: '65%',
                         plugins: {
                             legend: {
-                                display: true,
-                                position: 'bottom'
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    boxWidth: 15
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': ' + context.raw + ' Unit';
+                                    }
+                                }
                             }
                         }
                     }

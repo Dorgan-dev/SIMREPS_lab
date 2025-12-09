@@ -303,7 +303,7 @@
                                 placeholder="Masukkan durasi jam" min="1" required>
                         </div>
 
-                        <input type="hidden" name="status" value="Dipesan">
+                        <input type="hidden" name="status" value="Menunggu">
                     </div>
 
                     <div class="modal-footer">

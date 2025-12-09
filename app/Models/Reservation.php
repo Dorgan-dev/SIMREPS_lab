@@ -9,10 +9,6 @@ class Reservation extends Model
 {
     protected $table = 'reservations';
 
-    protected $primaryKey = 'res_id';
-    public $incrementing  = true;
-    protected $keyType    = 'int';
-
     protected $fillable = [
         'cust_id',
         'console_id',
@@ -37,5 +33,17 @@ class Reservation extends Model
     public function console()
     {
         return $this->belongsTo(Console::class, 'console_id');
+    }
+    public function customer()
+    {
+        return $this->belongsTo(User::class, 'cust_id');
+    }
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'disetujui_oleh');
+    }
+    public function customerUser()
+    {
+        return $this->belongsTo(User::class, 'cust_id');
     }
 }

@@ -13,13 +13,34 @@ class ReservationController extends Controller
     // ============================
     // ADMIN - INDEX
     // ============================
-    public function index(Request $request)
+    public function index()
     {
-        $filterableColumns   = ['durasi_jam', 'waktu_mulai', 'waktu_selesai', 'status'];
-        $reservation['data'] = Reservation::filter($request, $filterableColumns)->paginate(10)->withQueryString();
+        $data = Reservation::with(['console.room'])
+            ->latest()
+            ->paginate(10);
 
-        return view('_admin.reservation', $reservation);
+        $mode = 'riwayat';
+
+        return view('_admin.reservation', [
+            'reservations' => $data,
+            'mode' => 'pengajuan' // atau berjalan / riwayat
+        ]);
     }
+
+    public function pending()
+    {
+        $reservations = Reservation::with('console.room', 'approver')
+            ->where('status', 'menunggu')
+            ->orderBy('waktu_mulai', 'asc')
+            ->get();
+
+        return view('_admin.reservation', [
+            'reservations' => $reservations,
+            'mode' => 'pengajuan',
+        ]);
+    }
+
+
 
     // ============================
     // ADMIN - STORE
@@ -81,7 +102,7 @@ class ReservationController extends Controller
             'waktu_mulai' => $start,
             'waktu_selesai' => $end,
             'durasi_jam' => (int) $validated['durasi_jam'],
-            'status' => $validated['status'],
+            'status' => 'Menunggu',
         ]);
 
         // Update status console jadi "Dipesan"
@@ -93,6 +114,76 @@ class ReservationController extends Controller
 
         return back()->with('success', 'Reservasi berhasil dibuat dan status console diperbarui!');
     }
+
+    public function pengajuan()
+    {
+        $data = Reservation::with(['console.room'])
+            ->where('status', 'Menunggu')
+            ->orderBy('waktu_mulai', 'asc')
+            ->paginate(10);
+
+        return view('_admin.reservation', [
+            'data' => $data,
+            'mode' => 'pengajuan'
+        ]);
+    }
+
+
+
+    public function approve($id)
+    {
+        $reservation = Reservation::findOrFail($id);
+
+        $reservation->update([
+            'status' => 'Diterima',
+            'disetujui_oleh' => Auth::user()->id
+        ]);
+
+        return back()->with('success', 'Reservasi disetujui.');
+    }
+
+
+    public function reject($id)
+    {
+        $reservation = Reservation::findOrFail($id);
+
+        $reservation->update([
+            'status' => 'Ditolak',
+            'disetujui_oleh' => Auth::user()->id
+        ]);
+
+        return back()->with('error', 'Reservasi ditolak.');
+    }
+
+    public function running()
+    {
+        $now = now();
+
+        $reservations = Reservation::with('console.room', 'approver')
+            ->whereIn('status', ['Berlangsung', 'Diterima'])
+            ->where('waktu_selesai', '>', $now)
+            ->orderBy('waktu_mulai', 'asc')
+            ->get();
+
+        return view('_admin.reservation', [
+            'reservations' => $reservations,
+            'mode' => 'berjalan',
+        ]);
+    }
+
+    public function history()
+    {
+        $reservations = Reservation::with('console.room', 'approver')
+            ->whereIn('status', ['Selesai', 'Ditolak', 'Dibatalkan'])
+            ->orderBy('waktu_mulai', 'desc')
+            ->get();
+
+        return view('_admin.reservation', [
+            'reservations' => $reservations,
+            'mode' => 'riwayat',
+        ]);
+    }
+
 
 
     // ============================
