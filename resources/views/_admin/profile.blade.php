@@ -42,9 +42,6 @@
                             </button>
                         </div>
                         <h5 class="mt-3 mb-0">{{ auth()->user()->name }}</h5>
-                        <small class="text-muted">
-                            @{{ auth()->user()->username }}
-                        </small>
                     </div>
                 </div>
 

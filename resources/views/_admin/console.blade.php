@@ -14,9 +14,9 @@
                         <form method="GET" action="{{ route('admin.consoles.index') }}">
                             <select name="kategori" onchange="this.form.submit()" class="form-select">
                                 <option value="">Semua Kategori</option>
-                                <option value="PS 3" {{ request('kategori') == 'PS3' ? 'selected' : '' }}>PS 3</option>
-                                <option value="PS 4" {{ request('kategori') == 'PS4' ? 'selected' : '' }}>PS 4</option>
-                                <option value="PS 5" {{ request('kategori') == 'PS5' ? 'selected' : '' }}>PS 5</option>
+                                <option value="PS 3" {{ request('kategori') == 'PS 3' ? 'selected' : '' }}>PS 3</option>
+                                <option value="PS 4" {{ request('kategori') == 'PS 4' ? 'selected' : '' }}>PS 4</option>
+                                <option value="PS 5" {{ request('kategori') == 'PS 5' ? 'selected' : '' }}>PS 5</option>
                             </select>
                         </form>
 
@@ -35,55 +35,54 @@
                         <thead class="table-primary">
                             <tr>
                                 <th style="width: 50px;">No</th>
+                                <th>Ruangan</th>
                                 <th>Console ID</th>
                                 <th>Nama Konsol</th>
-                                <th>Nomor Unit</th>
+                                <th>Serial Number</th>
                                 <th>Kategori</th>
                                 <th>Harga/Jam</th>
-                                <th>Ruangan</th>
                                 <th>Status</th>
                                 <th style="width: 150px;">Aksi</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             @forelse ($data as $index => $item)
                                 <tr>
                                     <td>{{ ($data->currentPage() - 1) * $data->perPage() + $index + 1 }}</td>
-                                    <td>{{ $item->console_id }}</td>
+                                    <td>{{ optional($item->room)->name ?? '—' }}</td>
+                                    <td>{{ $item->id }}</td>
                                     <td>{{ $item->nama_unit }}</td>
                                     <td>{{ $item->nomor_unit }}</td>
                                     <td>{{ $item->kategori }}</td>
                                     <td>Rp {{ number_format($item->harga_per_jam, 0, ',', '.') }}</td>
-                                    <td>{{ $item->ruangan_id }}</td>
                                     <td>
                                         <span
-                                            class="badge text-black
-                                    @if ($item->status == 'Tersedia') bg-success text-white
-                                    @elseif($item->status == 'Dipesan') bg-warning text-white
-                                    @elseif($item->status == 'Perbaikan') bg-danger text-white
-                                    @else bg-secondary text-white @endif">
+                                            class="badge
+                                            @if ($item->status == 'Tersedia') bg-success text-white
+                                            @elseif($item->status == 'Dipesan') bg-warning text-dark
+                                            @elseif($item->status == 'Perbaikan') bg-danger text-white
+                                            @else bg-secondary text-white @endif">
                                             {{ $item->status }}
                                         </span>
                                     </td>
-
                                     <td>
                                         <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#editModal{{ $item->console_id }}">
+                                            data-bs-target="#editModal{{ $item->id }}">
                                             Edit
                                         </button>
 
                                         <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal{{ $item->console_id }}">
+                                            data-bs-target="#deleteModal{{ $item->id }}">
                                             Hapus
                                         </button>
                                     </td>
                                 </tr>
 
                                 {{-- Modal Edit Console --}}
-                                <div class="modal fade" id="editModal{{ $item->console_id }}" tabindex="-1">
+                                <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1">
                                     <div class="modal-dialog">
-                                        <form action="{{ route('admin.consoles.update', $item->console_id) }}" method="POST">
+                                        <form action="{{ route('admin.consoles.update', $item->id) }}"
+                                            method="POST">
                                             @csrf
                                             @method('PUT')
 
@@ -96,13 +95,26 @@
 
                                                 <div class="modal-body">
                                                     <div class="mb-2">
-                                                        <label>Nama Konsol</label>
-                                                        <input type="text" class="form-control" name="nama_konsol"
-                                                            value="{{ $item->nama_konsol }}" required>
+                                                        <label>Ruangan</label>
+                                                        <select name="room_id" class="form-select" required>
+                                                            <option value="">Pilih Ruangan</option>
+                                                            @foreach ($rooms as $room)
+                                                                <option value="{{ $room->id }}"
+                                                                    {{ $item->room_id == $room->id ? 'selected' : '' }}>
+                                                                    {{ $room->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
                                                     </div>
 
                                                     <div class="mb-2">
-                                                        <label>Nomor Unit</label>
+                                                        <label>Nama Konsol</label>
+                                                        <input type="text" class="form-control" name="nama_unit"
+                                                            value="{{ $item->nama_unit }}" required>
+                                                    </div>
+
+                                                    <div class="mb-2">
+                                                        <label>Serial Number</label>
                                                         <input type="text" class="form-control" name="nomor_unit"
                                                             value="{{ $item->nomor_unit }}" required>
                                                     </div>
@@ -110,14 +122,14 @@
                                                     <div class="mb-2">
                                                         <label>Kategori</label>
                                                         <select name="kategori" class="form-select">
-                                                            <option value="PS3"
-                                                                {{ $item->kategori == 'PS3' ? 'selected' : '' }}>PS3
+                                                            <option value="PS 3"
+                                                                {{ $item->kategori == 'PS 3' ? 'selected' : '' }}>PS3
                                                             </option>
-                                                            <option value="PS4"
-                                                                {{ $item->kategori == 'PS4' ? 'selected' : '' }}>PS4
+                                                            <option value="PS 4"
+                                                                {{ $item->kategori == 'PS 4' ? 'selected' : '' }}>PS4
                                                             </option>
-                                                            <option value="PS5"
-                                                                {{ $item->kategori == 'PS5' ? 'selected' : '' }}>PS5
+                                                            <option value="PS 5"
+                                                                {{ $item->kategori == 'PS 5' ? 'selected' : '' }}>PS5
                                                             </option>
                                                         </select>
                                                     </div>
@@ -131,16 +143,15 @@
                                                     <div class="mb-2">
                                                         <label>Status</label>
                                                         <select name="status" class="form-select">
-                                                            <option value="available"
-                                                                {{ $item->status == 'available' ? 'selected' : '' }}>
-                                                                Available
-                                                            </option>
-                                                            <option value="in_use"
-                                                                {{ $item->status == 'in_use' ? 'selected' : '' }}>Sedang
-                                                                Dipakai</option>
-                                                            <option value="maintenance"
-                                                                {{ $item->status == 'maintenance' ? 'selected' : '' }}>
-                                                                Maintenance</option>
+                                                            <option value="Tersedia"
+                                                                {{ $item->status == 'Tersedia' ? 'selected' : '' }}>
+                                                                Tersedia</option>
+                                                            <option value="Dipesan"
+                                                                {{ $item->status == 'Dipesan' ? 'selected' : '' }}>Sedang
+                                                                Dipesan</option>
+                                                            <option value="Perbaikan"
+                                                                {{ $item->status == 'Perbaikan' ? 'selected' : '' }}>
+                                                                Perbaikan</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -156,9 +167,10 @@
                                 </div>
 
                                 {{-- Modal Delete Console --}}
-                                <div class="modal fade" id="deleteModal{{ $item->console_id }}" tabindex="-1">
+                                <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1">
                                     <div class="modal-dialog">
-                                        <form action="{{ route('admin.consoles.destroy', $item->console_id) }}" method="POST">
+                                        <form action="{{ route('admin.consoles.destroy', $item->id) }}"
+                                            method="POST">
                                             @csrf
                                             @method('DELETE')
 
@@ -185,10 +197,7 @@
 
                             @empty
                                 <tr>
-                                    <td colspan="9"
-                                        class="text-center text-muted
-                                <td colspan="9"
-                                        class="text-center text-muted">Belum ada data console.</td>
+                                    <td colspan="9" class="text-center text-muted">Belum ada data console.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -216,21 +225,31 @@
 
                         <div class="modal-body">
                             <div class="mb-2">
-                                <label>Nama Konsol</label>
-                                <input type="text" class="form-control" name="nama_konsol" required>
+                                <label>Ruangan</label>
+                                <select name="room_id" class="form-select" required>
+                                    <option value="">Pilih Ruangan</option>
+                                    @foreach ($rooms as $room)
+                                        <option value="{{ $room->id }}">{{ $room->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="mb-2">
-                                <label>Nomor Unit</label>
+                                <label>Nama Konsol</label>
+                                <input type="text" class="form-control" name="nama_unit" required>
+                            </div>
+
+                            <div class="mb-2">
+                                <label>Serial Number</label>
                                 <input type="text" class="form-control" name="nomor_unit" required>
                             </div>
 
                             <div class="mb-2">
                                 <label>Kategori</label>
                                 <select name="kategori" class="form-select" required>
-                                    <option value="PS3">PS3</option>
-                                    <option value="PS4">PS4</option>
-                                    <option value="PS5">PS5</option>
+                                    <option value="PS 3">PS3</option>
+                                    <option value="PS 4">PS4</option>
+                                    <option value="PS 5">PS5</option>
                                 </select>
                             </div>
 
@@ -242,9 +261,9 @@
                             <div class="mb-2">
                                 <label>Status</label>
                                 <select name="status" class="form-select" required>
-                                    <option value="available">Available</option>
-                                    <option value="in_use">Sedang Dipakai</option>
-                                    <option value="maintenance">Maintenance</option>
+                                    <option value="Tersedia">Available</option>
+                                    <option value="Dipesan">Sedang Dipakai</option>
+                                    <option value="Perbaikan">Maintenance</option>
                                 </select>
                             </div>
 

@@ -9,22 +9,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reservations', function (Blueprint $table) {
-            $table->bigIncrements('res_id');
-            $table->integer('cust_id');
-            $table->integer('console_id');
+            $table->id();
 
-            $table->date('tanggal_bermain');
+            $table->foreignId('cust_id')->constrained('users')->onDelete('cascade');
 
-            // waktu mulai & selesai (date + time)
-            $table->time('waktu_selesai');
+            $table->foreignId('console_id')->constrained('consoles')->onDelete('cascade');
 
-            // durasi jam INTEGER (bukan time)
+            $table->dateTime('waktu_mulai');
+            $table->dateTime('waktu_selesai');
+
             $table->integer('durasi_jam');
 
-            $table->integer('disetujui_oleh')->nullable();
+            $table->foreignId('disetujui_oleh')->nullable()->constrained('users')->onDelete('set null');
 
             $table->enum('status', ['Dipesan', 'Berlangsung', 'Selesai', 'Dibatalkan'])
-                  ->default('Dipesan');
+                ->default('Dipesan');
+
+            $table->index(['console_id', 'waktu_mulai', 'status']);
 
             $table->timestamps();
         });

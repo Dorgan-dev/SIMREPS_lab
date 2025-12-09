@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Room;
 use App\Models\Console;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('guest.index');
+        $rooms = Room::latest()->limit(3)->get();
+        return view('guest.index', compact('rooms'));
+    }
+
+    public function rooms()
+    {
+        $rooms = Room::latest()->get(); // SEMUA DATA
+        return view('guest.rooms', compact('rooms'));
     }
 
     public function about()
@@ -35,17 +43,18 @@ class HomeController extends Controller
         return view('guest.register');
     }
 
-    public function room()
-    {
-        return view('guest.room');
-    }
-
     public function console(Request $request)
     {
-        $filterableColumns   = ['kategori'];
-        $console['data'] = Console::filter($request, $filterableColumns)->paginate(10)->withQueryString();
-        return view('guest.console', $console);
+        $filterableColumns = ['kategori'];
+
+        $consoles = Console::filter($request, $filterableColumns)
+            ->with('images')
+            ->paginate(8)
+            ->withQueryString();
+
+        return view('guest.console', compact('consoles'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -68,7 +77,8 @@ class HomeController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $room = Room::with(['images', 'consoles'])->findOrFail($id);
+        return view('guest.room-detail', compact('room'));
     }
 
     /**

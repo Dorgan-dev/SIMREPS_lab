@@ -21,8 +21,8 @@
                     <i class="bi bi-chevron-down toggle-dropdown"></i>
                 </a>
                 <ul>
-                    <li><a href="{{ route('home.room') }}">Play Room</a></li>
-                    <li><a href="{{ route('home.console') }}">Console</a></li>
+                    <li><a href="{{ route('home.rooms') }}">Play Room</a></li>
+                    <li><a href="{{ route('home.consoles') }}">Console</a></li>
                     <li><a href="#">Jadwal Hari Ini</a></li>
                     <li><a href="#">Reservasi Mendatang</a></li>
                 </ul>

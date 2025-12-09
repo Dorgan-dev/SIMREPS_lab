@@ -28,7 +28,6 @@
                                 <th>No HP</th>
                                 <th>Email</th>
                                 <th>Username</th>
-                                <th>Password</th>
                                 <th>Role</th>
                                 <th>Dibuat</th>
                                 <th>Aksi</th>
@@ -46,7 +45,6 @@
                                     <td>{{ $data->no_hp }}</td>
                                     <td>{{ $data->email }}</td>
                                     <td>{{ $data->username }}</td>
-                                    <td>{{ substr($data->password, 0, 5) }}...</td>
                                     <td>
                                         {{ $data->role == 1 ? 'Admin' : ($data->role == 2 ? 'Resepsionis' : 'Customer') }}
                                     </td>
@@ -77,9 +75,9 @@
                                                 </h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
-                                            <form action="{{ route('admin.customers.store', $data->id) }}" method="POST">
+                                            <form action="{{ route('admin.customers.update', $data->id) }}" method="POST">
                                                 @csrf
-                                                @method('POST')
+                                                @method('PUT')
                                                 <div class="modal-body">
                                                     <div class="row">
                                                         <div class="col-md-12 mb-3">
@@ -209,7 +207,7 @@
                         <h5 class="modal-title" id="tambahAkunLabel">Daftar Akun Baru</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="{{ route('admin.customer.store') }}" method="POST">
+                    <form action="{{ route('admin.customers.store') }}" method="POST">
                         @csrf
                         <div class="modal-body">
                             <div class="row">

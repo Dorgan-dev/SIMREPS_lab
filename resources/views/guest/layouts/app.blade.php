@@ -34,7 +34,7 @@
     <script src="{{ asset('guest/vendor/swiper/swiper-bundle.min.js') }}"></script>
 
     <!-- Main JS File -->
-    <script src="guest/js/main.js"></script>
+    <script src="{{ asset('guest/js/main.js') }}"></script>
 
     <!-- Modal Notifikasi -->
     <div class="modal fade" id="notifModal" tabindex="-1" aria-labelledby="notifModalLabel" aria-hidden="true">

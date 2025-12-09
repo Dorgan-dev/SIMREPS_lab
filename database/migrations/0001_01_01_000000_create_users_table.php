@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('no_hp')->nullable();
             $table->string('password');
+            $table->string('profile_photo')->nullable();
             $table->string('google_id')->nullable();
             $table->tinyInteger('role')->default(3); //(1=admin, 2=staff, 3=customer)
 

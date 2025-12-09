@@ -116,7 +116,7 @@
     <script src="{{ asset('_admin/js/script.js') }}"></script>
 
     {{-- Tampilkan modal Ganti Password HANYA jika ada error --}}
-    @if ($errors->any())
+    @if ($errors->has('current_password') || $errors->has('new_password') || $errors->has('new_password_confirmation'))
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 var modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('changePasswordModal'));
@@ -124,6 +124,7 @@
             });
         </script>
     @endif
+
 
     {{-- Notifikasi success --}}
     @if (session('success'))

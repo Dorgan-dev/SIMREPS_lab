@@ -122,7 +122,7 @@
             </div>
 
             <div class="more-courses text-center" data-aos="fade-up" data-aos-delay="500">
-                <a href="rooms.html" class="btn-more">Lihat Semua Play Rooms</a>
+                <a href="{{ route('home.rooms') }}" class="btn-more">Lihat Semua Play Rooms</a>
             </div>
 
         </div>

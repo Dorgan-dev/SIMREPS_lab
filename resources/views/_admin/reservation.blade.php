@@ -53,7 +53,7 @@
                                 <tr>
                                     <td>{{ $data->firstItem() + $i }}</td>
                                     <td>{{ $item->cust_id }}</td>
-                                    <td>{{ $item->console_id }}</td>
+                                    <td>{{ $item->id }}</td>
                                     <td>{{ $item->durasi_jam }}</td>
                                     <td>{{ $item->waktu_mulai }}</td>
                                     <td>
@@ -77,7 +77,7 @@
                                 <div class="modal fade" id="editModal{{ $item->res_id }}" tabindex="-1"
                                     aria-labelledby="editModalLabel{{ $item->res_id }}" aria-hidden="true">
                                     <div class="modal-dialog">
-                                        <form action="{{ route('reservation.update', $item->res_id) }}" method="POST">
+                                        <form action="{{ route('admin.reservations.update', $item->res_id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
 
@@ -101,10 +101,10 @@
 
                                                     <!-- Console ID -->
                                                     <div class="mb-3">
-                                                        <label for="console_id" class="form-label">Console
+                                                        <label for="id" class="form-label">Console
                                                             ID</label>
                                                         <input type="text" class="form-control" name="console_id"
-                                                            value="{{ $item->console_id }}" required>
+                                                            value="{{ $item->id }}" required>
                                                     </div>
 
                                                     <!-- Waktu Mulai -->
@@ -171,7 +171,7 @@
                                 <div class="modal fade" id="deleteModal{{ $item->res_id }}" tabindex="-1"
                                     aria-labelledby="deleteModalLabel{{ $item->res_id }}" aria-hidden="true">
                                     <div class="modal-dialog">
-                                        <form action="{{ route('reservation.destroy', $item->res_id) }}" method="POST">
+                                        <form action="{{ route('admin.reservations.destroy', $item->res_id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
 
@@ -190,7 +190,7 @@
                                                     <ul>
                                                         <li><b>ID Reservasi :</b> {{ $item->res_id }}</li>
                                                         <li><b>Customer ID :</b> {{ $item->cust_id }}</li>
-                                                        <li><b>Console ID :</b> {{ $item->console_id }}</li>
+                                                        <li><b>Console ID :</b> {{ $item->id }}</li>
                                                     </ul>
 
                                                     <p class="text-danger"><b>Tindakan ini tidak dapat
@@ -226,7 +226,7 @@
         <!-- Modal Tambah item -->
         <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <form action="{{ route('reservation.store') }}" method="POST">
+                <form action="{{ route('admin.reservations.store') }}" method="POST">
                     @csrf
                     <div class="modal-content">
                         <div class="modal-header">

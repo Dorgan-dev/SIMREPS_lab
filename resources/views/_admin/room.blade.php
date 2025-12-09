@@ -12,7 +12,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">Rooms Table</h6>
 
                     <div class="d-flex align-items-center gap-2">
-                        <form method="GET" action="{{ route('admin.room') }}">
+                        <form method="GET" action="{{ route('admin.rooms.index') }}">
                             <select name="category" onchange="this.form.submit()" class="form-select">
                                 <option value="">Semua Kategori</option>
                                 <option value="Premium" {{ request('category') == 'Premium' ? 'selected' : '' }}>Premium
@@ -40,8 +40,6 @@
                                 <th>Nama Ruangan</th>
                                 <th>Kategori</th>
                                 <th>Deskripsi</th>
-                                <th>Harga/Jam</th>
-                                <th>Gambar</th>
                                 <th width="150">Aksi</th>
                             </tr>
                         </thead>
@@ -52,18 +50,7 @@
                                     <td>{{ ($data->currentPage() - 1) * $data->perPage() + $index + 1 }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->category ?? '-' }}</td>
-                                    <td>{{ Str::limit($item->description, 50) }}</td>
-                                    <td>Rp {{ number_format($item->price_per_hour, 0, ',', '.') }}</td>
-
-                                    <td>
-                                        @if ($item->image)
-                                            <img src="{{ asset('storage/' . $item->image) }}" width="70"
-                                                class="rounded">
-                                        @else
-                                            <span class="text-muted">Tidak ada</span>
-                                        @endif
-                                    </td>
-
+                                    <td>{{ Str::limit($item->description, 80) }}</td>
                                     <td>
                                         <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#editModal{{ $item->id }}">
@@ -80,7 +67,7 @@
                                 {{-- Modal Edit --}}
                                 <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1">
                                     <div class="modal-dialog">
-                                        <form action="{{ route('admin.room.update', $item->id) }}" method="POST"
+                                        <form action="{{ route('admin.rooms.update', $item->id) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
                                             @method('POST')
@@ -135,7 +122,7 @@
                                 {{-- Modal Delete --}}
                                 <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1">
                                     <div class="modal-dialog">
-                                        <form action="{{ route('admin.room.destroy', $item->id) }}" method="POST">
+                                        <form action="{{ route('admin.rooms.destroy', $item->id) }}" method="POST">
                                             @csrf
                                             @method('POST')
 
@@ -178,7 +165,7 @@
         {{-- Modal Tambah --}}
         <div class="modal fade" id="tambahModal" tabindex="-1">
             <div class="modal-dialog">
-                <form action="{{ route('admin.room.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.rooms.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="modal-content">

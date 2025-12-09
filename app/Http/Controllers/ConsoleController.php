@@ -2,67 +2,68 @@
 
 namespace App\Http\Controllers;
 
-use index;
+use App\Models\Room;
 use App\Models\Console;
 use Illuminate\Http\Request;
 
 class ConsoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
-        $filterableColumns   = ['kategori'];
-        $console['data'] = Console::filter($request, $filterableColumns)->paginate(10)->withQueryString();
+        $query = Console::with('room')->orderBy('id', 'desc');
+
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->kategori);
+        }
+
+        $filterableColumns = ['kategori'];
+        $query = Console::filter($request, $filterableColumns)->with('room')->orderBy('id', 'desc');
+        $console['data'] = $query->paginate(10)->withQueryString();
+        $console['rooms'] = Room::orderBy('name')->get();
+
         return view('_admin.console', $console);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'room_id' => 'required|exists:rooms,id',
+            'nama_unit' => 'required|string|max:255',
+            'nomor_unit' => 'required|string|max:100',
+            'kategori' => 'required|string',
+            'harga_per_jam' => 'required|numeric',
+            'status' => 'required|string',
+        ]);
+
+        Console::create($validated);
+
+        return redirect()->route('admin.consoles.index')->with('success', 'Console ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $item = Console::findOrFail($id);
+
+        $validated = $request->validate([
+            'room_id' => 'required|exists:rooms,id',
+            'nama_unit' => 'required|string|max:255',
+            'nomor_unit' => 'required|string|max:100',
+            'kategori' => 'required|string',
+            'harga_per_jam' => 'required|numeric',
+            'status' => 'required|string',
+        ]);
+
+        $item->update($validated);
+
+        return redirect()->route('admin.consoles.index')->with('success', 'Console diupdate.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id)
     {
-        //
-    }
+        $item = Console::findOrFail($id);
+        $item->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('admin.consoles.index')->with('success', 'Console dihapus.');
     }
 }

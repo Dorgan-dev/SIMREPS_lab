@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Reservation;
 use Carbon\Carbon;
+use App\Models\Console;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -61,36 +62,39 @@ class ReservationController extends Controller
     // ============================
     public function customerStore(Request $request)
     {
-        if (!Auth::check()) {
-            return redirect()->route('home.login')->with('error', 'Silakan login dulu');
-        }
-
         $validated = $request->validate([
+            'console_id' => 'required|exists:consoles,id',
             'tanggal_bermain' => 'required|date',
-            'waktu_mulai'     => 'required',
-            'durasi_jam'      => 'required|integer|min:1',
-            'console_id'      => 'required|integer',
-            'status'          => 'required'
+            'waktu_mulai' => 'required|date_format:H:i',
+            'durasi_jam' => 'required|integer|min:1',
+            'status' => 'required|string',
         ]);
 
-        $start = Carbon::parse(
-            $validated['tanggal_bermain'] . ' ' . $validated['waktu_mulai']
-        )->timezone('Asia/Jakarta');
+        $start = \Carbon\Carbon::parse($validated['tanggal_bermain'] . ' ' . $validated['waktu_mulai'])
+            ->timezone('Asia/Jakarta');
 
         $end = $start->copy()->addHours((int) $validated['durasi_jam']);
 
-        Reservation::create([
-            'cust_id'        => Auth::id(),
-            'console_id'     => $validated['console_id'],
-            'tanggal_bermain' => $validated['tanggal_bermain'],
-            'waktu_mulai'    => $start,
-            'waktu_selesai'  => $end,
-            'durasi_jam'     => $validated['durasi_jam'],
-            'status'         => $validated['status'],
+        $reservation = Reservation::create([
+            'cust_id' => Auth::id(),
+            'console_id' => $validated['console_id'],
+            'waktu_mulai' => $start,
+            'waktu_selesai' => $end,
+            'durasi_jam' => (int) $validated['durasi_jam'],
+            'status' => $validated['status'],
         ]);
 
-        return back()->with('success', 'Reservasi berhasil dibuat!');
+        // Update status console jadi "Dipesan"
+        $console = Console::find($validated['console_id']);
+        if ($console) {
+            $console->status = 'Dipesan'; // pastikan 'Dipesan' ada di enum status console
+            $console->save();
+        }
+
+        return back()->with('success', 'Reservasi berhasil dibuat dan status console diperbarui!');
     }
+
+
     // ============================
     // ADMIN - UPDATE
     // ============================

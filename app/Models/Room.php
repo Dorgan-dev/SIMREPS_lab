@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Image;
 use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
@@ -11,4 +12,14 @@ class Room extends Model
         'category',
         'description',
     ];
+
+    public function consoles()
+    {
+        return $this->hasMany(Console::class);
+    }
+    public function images()
+    {
+            return $this->morphMany(Image::class, 'imageable');
+
+    }
 }
