@@ -20,6 +20,11 @@ class Reservation extends Model
         'disetujui_oleh'
     ];
 
+    protected $casts = [
+        'waktu_mulai' => 'datetime',
+        'waktu_selesai' => 'datetime'
+    ];
+
 
     public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
     {
@@ -45,5 +50,22 @@ class Reservation extends Model
     public function customerUser()
     {
         return $this->belongsTo(User::class, 'cust_id');
+    }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'disetujui_oleh');
+    }
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
+    /**
+     * Get primary image (bukti pembayaran)
+     */
+    public function paymentProof()
+    {
+        return $this->morphOne(Image::class, 'imageable')->where('is_primary', 1);
     }
 }

@@ -1,19 +1,33 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Customer;
 
+use App\Http\Controllers\Controller;
 use App\Models\Console;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class CustomerController extends Controller
+class BookingController extends Controller
 {
+    /**
+     * Tampilkan riwayat booking user
+     */
+    public function index()
+    {
+        $bookings = Reservation::with(['console.images', 'console.room'])
+            ->where('cust_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('_customer.booking.index', compact('bookings'));
+    }
+
     /**
      * Tampilkan daftar console yang tersedia untuk booking
      */
-    public function index()
+    public function showConsoles()
     {
         $consoles = Console::with(['room', 'images' => function($q) {
             $q->where('is_primary', 1);
@@ -21,7 +35,7 @@ class CustomerController extends Controller
         ->where('status', 'Tersedia')
         ->get();
 
-        return view('_customer.index', compact('consoles'));
+        return view('_customer.booking.consoles', compact('consoles'));
     }
 
     /**
@@ -191,53 +205,12 @@ class CustomerController extends Controller
     }
 
     /**
-     * Upload bukti pembayaran
-     */
-    public function uploadPayment(Request $request, $reservationId)
-    {
-        $request->validate([
-            'payment_proof' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'payment_note' => 'nullable|string|max:500'
-        ]);
-
-        $reservation = Reservation::where('cust_id', auth()->id())
-            ->where('status', 'Menunggu')
-            ->findOrFail($reservationId);
-
-        try {
-            DB::beginTransaction();
-
-            // Upload file
-            if ($request->hasFile('payment_proof')) {
-                $file = $request->file('payment_proof');
-                $filename = 'payment_' . time() . '_' . $reservation->id . '.' . $file->getClientOriginalExtension();
-                $path = $file->storeAs('payments', $filename, 'public');
-
-                // Simpan ke tabel images (polymorphic)
-                $reservation->images()->create([
-                    'image_path' => $path,
-                    'is_primary' => 1
-                ]);
-            }
-
-            DB::commit();
-
-            return redirect()->route('booking.detail', $reservation->id)
-                ->with('success', 'Bukti pembayaran berhasil diupload! Menunggu konfirmasi admin.');
-
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->with('error', 'Terjadi kesalahan saat upload. Silakan coba lagi.');
-        }
-    }
-
-    /**
      * Batalkan booking
      */
     public function cancel(Request $request, $reservationId)
     {
         $request->validate([
-            'cancel_reason' => 'required|string|max:500'
+            'cancel_reason' => 'nullable|string|max:500'
         ]);
 
         $reservation = Reservation::where('cust_id', auth()->id())

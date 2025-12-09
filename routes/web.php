@@ -11,6 +11,10 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthenticationController;
 
+
+use App\Http\Controllers\Customer\BookingController;
+use App\Http\Controllers\CustomerController;
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('home.about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact');
@@ -108,9 +112,8 @@ Route::middleware(['checkislogin', 'checkrole:3'])
     ->name('customer.')
     ->group(function () {
 
-        Route::get('/', function () {
-            return view('_customer.index');
-        })->name('dashboard');
+        Route::get('/', [CustomerController::class, 'index'])->name('dashboard');
+
 
         Route::post('/reservation', [ReservationController::class, 'customerStore'])->name('reservation.store');
 
@@ -118,3 +121,31 @@ Route::middleware(['checkislogin', 'checkrole:3'])
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'changePassword'])->name('change-password');
     });
+
+Route::get('404', function ($id) {})->name('404');
+
+// CUSTOMER
+
+Route::middleware(['auth', 'checkrole:3'])->prefix('booking')->name('booking.')->group(function () {
+
+    // Halaman riwayat booking user
+    Route::get('/', [BookingController::class, 'index'])->name('index');
+
+    // Halaman daftar console untuk booking baru
+    Route::get('/consoles', [BookingController::class, 'showConsoles'])->name('consoles');
+
+    // Halaman pilih jadwal untuk console tertentu
+    Route::get('/{console}/schedule', [BookingController::class, 'showSchedule'])->name('schedule');
+
+    // Check availability (AJAX)
+    Route::post('/check-availability', [BookingController::class, 'checkAvailability'])->name('check');
+
+    // Simpan booking
+    Route::post('/store', [BookingController::class, 'store'])->name('store');
+
+    // Detail booking
+    Route::get('/{reservation}/detail', [BookingController::class, 'detail'])->name('detail');
+
+    // Batalkan booking
+    Route::put('/{reservation}/cancel', [BookingController::class, 'cancel'])->name('cancel');
+});

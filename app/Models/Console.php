@@ -51,4 +51,9 @@ class Console extends Model
     {
         return $this->hasMany(Reservation::class, 'console_id');
     }
+
+    public function primaryImage()
+    {
+        return $this->morphOne(Image::class, 'imageable')->where('is_primary', 1);
+    }
 }
