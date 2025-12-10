@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Room;
 use App\Models\User;
 use App\Models\Console;
 use App\Models\Customer;
@@ -21,62 +22,49 @@ class AdminController extends Controller
     {
         $today = Carbon::today();
 
-        // ✅ Reservasi Hari Ini
+        // ===== STATISTIK UTAMA =====
+        $totalPS        = Console::count();
+        $availablePS    = Console::where('status', 'Tersedia')->count();
+        $activePS       = Console::where('status', 'Dipesan')->count();
+        $maintenancePS  = Console::where('status', 'Perbaikan')->count();
+
+        $psUsagePercent = $totalPS > 0
+            ? round(($activePS / $totalPS) * 100, 1)
+            : 0;
+
         $todayReservations = Reservation::whereDate('created_at', $today)->count();
 
-        // ✅ Total PS
-        $totalPS = Console::count();
-
-        // ✅ PS Sedang Digunakan
-        $activePS = Reservation::where('status', 'Berlangsung')->count();
-
-        // ✅ PS Tersedia
-        $availablePS = Console::where('status', 'Tersedia')->count();
-
-        // ✅ PS Maintenance
-        $maintenancePS = Console::where('status', 'Perbaikan')->count();
-
-        // ✅ Persentase Pemakaian PS
-        $psUsagePercent = $totalPS > 0 ? round(($activePS / $totalPS) * 100, 1) : 0;
-
-        // ✅ Pendapatan Hari Ini (REAL dari harga console)
+        // ===== PENDAPATAN HARI INI =====
         $todayRevenue = Reservation::join('consoles', 'reservations.console_id', '=', 'consoles.id')
             ->whereDate('reservations.created_at', $today)
             ->where('reservations.status', 'Selesai')
             ->sum(DB::raw('reservations.durasi_jam * consoles.harga_per_jam'));
 
-        // ✅ Member Aktif
+        // ===== DATA MEMBER =====
         $activeMembers = User::where('role', 'customer')->count();
 
-        // ✅ Member Baru Bulan Ini
         $newMembers = User::where('role', 'customer')
             ->whereMonth('created_at', now()->month)
             ->count();
 
-        // ✅ Reservasi Terbaru
+        // ===== RESERVASI TERBARU =====
+        // Gunakan paginate agar Blade bisa menampilkan data dinamis dengan paging
         $latestReservations = Reservation::with(['console', 'customer'])
             ->latest()
-            ->limit(5)
-            ->get();
+            ->paginate(10);
 
-        // ✅ Grafik 7 Hari Terakhir
-        $revenueData = [];
-        $revenueLabels = [];
+        // ===== GRAFIK 7 HARI TERAKHIR =====
+        [$revenueLabels, $revenueData] = $this->getWeeklyRevenue();
 
-        for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::today()->subDays($i);
-
-            $revenue = Reservation::join('consoles', 'reservations.console_id', '=', 'consoles.id')
-                ->whereDate('reservations.created_at', $date)
-                ->where('reservations.status', 'Selesai')
-                ->sum(DB::raw('reservations.durasi_jam * consoles.harga_per_jam'));
-
-            $revenueData[] = $revenue;
-            $revenueLabels[] = $date->format('D');
-        }
-
-        // ✅ Data PS Sidebar
+        // ===== DATA PLAYSTATION SIDEBAR =====
         $playstations = Console::latest()->limit(5)->get();
+
+        // Data chart jumlah console per ruangan
+        $consolePerRoom = Room::withCount('consoles')->get();
+
+        // Siapkan data untuk chart
+        $roomLabels = $consolePerRoom->pluck('name'); // nama ruangan
+        $roomData   = $consolePerRoom->pluck('consoles_count'); // jumlah console
 
         return view('_admin.index', compact(
             'todayReservations',
@@ -88,18 +76,47 @@ class AdminController extends Controller
             'todayRevenue',
             'activeMembers',
             'newMembers',
-            'latestReservations',
-            'revenueData',
+            'latestReservations', // <-- Blade akan pakai variabel ini
             'revenueLabels',
-            'playstations'
+            'revenueData',
+            'playstations',
+            'roomData',
+            'roomLabels'
         ));
     }
 
+    /**
+     * Ambil data pendapatan 7 hari terakhir
+     */
+    private function getWeeklyRevenue(): array
+    {
+        $labels = [];
+        $data   = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::today()->subDays($i);
+
+            $revenue = Reservation::join('consoles', 'reservations.console_id', '=', 'consoles.id')
+                ->whereDate('reservations.created_at', $date)
+                ->where('reservations.status', 'Selesai')
+                ->sum(DB::raw('reservations.durasi_jam * consoles.harga_per_jam'));
+
+            $labels[] = $date->format('D');
+            $data[]   = $revenue;
+        }
+
+        return [$labels, $data];
+    }
 
     public function customer()
     {
-        $user = User::all();
-        return view('_admin.customer', compact('user'));
+        $users = User::all();
+        return view('_admin.customer', compact('users'));
+    }
+
+    public function profile()
+    {
+        return view('_admin.profile');
     }
 
     /**
@@ -108,11 +125,6 @@ class AdminController extends Controller
     public function create()
     {
         //
-    }
-
-    public function profile()
-    {
-        return view('_admin.profile');
     }
 
     /**

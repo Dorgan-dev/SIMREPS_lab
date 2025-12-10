@@ -15,6 +15,43 @@
                 </div>
             </div>
 
+            <!-- Quick Actions -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="mb-3">Quick Actions</h5>
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <a href="" class="btn btn-primary w-100">
+                                        <i data-feather="plus-circle" style="width: 18px; height: 18px;"></i>
+                                        <span class="d-block mt-1">Reservasi Baru</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="" class="btn btn-info w-100">
+                                        <i data-feather="monitor" style="width: 18px; height: 18px;"></i>
+                                        <span class="d-block mt-1">Tambah PlayStation</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="" class="btn btn-warning w-100">
+                                        <i data-feather="users" style="width: 18px; height: 18px;"></i>
+                                        <span class="d-block mt-1">Kelola Member</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="" class="btn btn-success w-100">
+                                        <i data-feather="file-text" style="width: 18px; height: 18px;"></i>
+                                        <span class="d-block mt-1">Laporan</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Stat Cards -->
             <div class="row stat-cards mb-4">
                 <!-- Total Reservasi Hari Ini -->
@@ -98,154 +135,18 @@
                 </div>
             </div>
 
-            <div class="row">
-                <!-- Chart & Tabel Reservasi Terbaru -->
-                <div class="col-lg-9">
-                    <!-- Tabel Reservasi Terbaru -->
-                    <div class="users-table table-wrapper">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0">Reservasi Terbaru</h5>
-                            <a href="" class="btn btn-sm btn-primary">
-                                <i data-feather="eye" style="width: 16px; height: 16px;"></i> Lihat Semua
-                            </a>
-                        </div>
-                        <table class="posts-table">
-                            <thead>
-                                <tr class="users-table-info">
-                                    <th>ID Reservasi</th>
-                                    <th>Customer</th>
-                                    <th>PlayStation</th>
-                                    <th>Paket</th>
-                                    <th>Waktu Mulai</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($latestReservations ?? [] as $reservation)
-                                    <tr>
-                                        <td><strong>#{{ $reservation->id }}</strong></td>
-                                        <td>
-                                            <div class="pages-table-img">
-                                                <picture>
-                                                    <img src="{{ $reservation->customer->profile_photo_url ?? asset('img/avatar/default.png') }}"
-                                                        alt="{{ $reservation->customer->name ?? 'Customer' }}">
-                                                </picture>
-                                                {{ $reservation->customer->name ?? '-' }}
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-info">
-                                                <i data-feather="monitor" style="width: 14px; height: 14px;"></i>
-                                                PS {{ $reservation->console->nama_unit ?? '-' }}
-                                            </span>
-                                        </td>
-                                        <td>{{ $reservation->paket->nama ?? '-' }}</td>
-                                        <td>{{ $reservation->waktu_mulai ? \Carbon\Carbon::parse($reservation->waktu_mulai)->format('H:i, d/m/Y') : '-' }}
-                                        </td>
-                                        <td>
-                                            @if ($reservation->status == 'Dipesan')
-                                                <span class="badge bg-warning">Menunggu</span>
-                                            @elseif ($reservation->status == 'Berlangsung')
-                                                <span class="badge bg-primary">Berlangsung</span>
-                                            @elseif ($reservation->status == 'Selesai')
-                                                <span class="badge bg-success">Selesai</span>
-                                            @else
-                                                <span class="badge bg-danger">Dibatalkan</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <span class="p-relative">
-                                                <button class="dropdown-btn transparent-btn" type="button"
-                                                    title="More info">
-                                                    <div class="sr-only">More info</div>
-                                                    <i data-feather="more-horizontal" aria-hidden="true"></i>
-                                                </button>
-                                                <ul class="users-item-dropdown dropdown">
-                                                    <li><a href="">Detail</a>
-                                                    </li>
-                                                    <li><a href="">Edit</a>
-                                                    </li>
-                                                    @if ($reservation->status == 'active')
-                                                        <li><a href="">Selesaikan</a>
-                                                        </li>
-                                                    @endif
-                                                </ul>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center py-4">
-                                            <i data-feather="inbox" style="width: 48px; height: 48px; opacity: 0.3;"></i>
-                                            <p class="text-muted mt-2">Belum ada reservasi</p>
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="row stat-cards mb-4">
+                <!-- ====== PIE CHART STATUS PS ====== -->
+                <div class="col-md-6 col-xl-3">
 
-                <!-- Sidebar Kanan -->
-                <div class="col-lg-3">
-                    <!-- Status PlayStation -->
-                    <article class="white-block mb-4">
-                        <div class="top-cat-title">
-                            <h3>Status PlayStation</h3>
-                            <p>{{ $totalPS ?? 0 }} Unit PlayStation</p>
-                        </div>
-                        <ul class="top-cat-list">
-                            @forelse($playstations ?? [] as $ps)
-                                <li>
-                                    <a href="">
-                                        <div class="top-cat-list__title">
-                                            <i data-feather="monitor" style="width: 16px; height: 16px;"></i>
-                                            {{ $ps->nama }}
-                                            <span>
-                                                @if ($ps->status == 'tersedia')
-                                                    <span class="badge bg-success">Tersedia</span>
-                                                @elseif($ps->status == 'digunakan')
-                                                    <span class="badge bg-warning">Digunakan</span>
-                                                @else
-                                                    <span class="badge bg-danger">Maintenance</span>
-                                                @endif
-                                            </span>
-                                        </div>
-                                        <div class="top-cat-list__subtitle">
-                                            {{ $ps->tipe ?? 'PS4' }} -
-                                            @if ($ps->status == 'digunakan')
-                                                <span class="warning">Sisa: {{ $ps->remaining_time ?? '0' }} menit</span>
-                                            @else
-                                                <span class="success">Siap digunakan</span>
-                                            @endif
-                                        </div>
-                                    </a>
-                                </li>
-                            @empty
-                                <li class="text-center py-3 text-muted">
-                                    <small>Belum ada data PlayStation</small>
-                                </li>
-                            @endforelse
-                        </ul>
-                        <div class="mt-3 text-center">
-                            <a href="" class="btn btn-sm btn-outline-primary w-100">
-                                <i data-feather="settings" style="width: 14px; height: 14px;"></i> Kelola PlayStation
-                            </a>
-                        </div>
-                    </article>
-
-                    <!-- ✅ DONUT CHART STATUS PLAYSTATION -->
                     <article class="white-block mb-4">
                         <div class="top-cat-title text-center">
                             <h3>Status PlayStation</h3>
                             <p>Total {{ $totalPS ?? 0 }} Unit</p>
                         </div>
-
                         <div class="d-flex justify-content-center">
                             <canvas id="customersChart" width="220" height="220"></canvas>
                         </div>
-
                         <div class="text-center mt-4">
                             <div class="row">
                                 <div class="col-4">
@@ -263,8 +164,68 @@
                             </div>
                         </div>
                     </article>
+                </div>
 
-                    <!-- Paket Populer -->
+                <!-- Status PS Sidebar -->
+                <div class="col-md-6 col-xl-3">
+                    <article class="white-block mb-4">
+                        <div class="top-cat-title">
+                            <h3>Status PlayStation</h3>
+                            <p>{{ $totalPS ?? 0 }} Unit PlayStation</p>
+                        </div>
+                        <ul class="top-cat-list">
+                            @forelse($playstations ?? [] as $ps)
+                                <li>
+                                    <a href="#">
+                                        <div class="top-cat-list__title">
+                                            <i data-feather="monitor" style="width: 16px; height: 16px;"></i>
+                                            {{ $ps->nama_unit }}
+                                            <span>
+                                                @if ($ps->status == 'Tersedia')
+                                                    <span class="badge bg-success">Tersedia</span>
+                                                @elseif($ps->status == 'Dipesan')
+                                                    <span class="badge bg-warning">Digunakan</span>
+                                                @else
+                                                    <span class="badge bg-danger">Maintenance</span>
+                                                @endif
+                                            </span>
+                                        </div>
+                                        <div class="top-cat-list__subtitle">
+                                            {{ $ps->kategori ?? 'PS4' }} -
+                                            @if ($ps->status == 'Dipesan')
+                                                <span class="warning">Sedang digunakan</span>
+                                            @else
+                                                <span class="success">Siap digunakan</span>
+                                            @endif
+                                        </div>
+                                    </a>
+                                </li>
+                            @empty
+                                <li class="text-center py-3 text-muted">
+                                    <small>Belum ada data PlayStation</small>
+                                </li>
+                            @endforelse
+                        </ul>
+                        <div class="mt-3 text-center">
+                            <a href="#" class="btn btn-sm btn-outline-primary w-100">
+                                <i data-feather="settings" style="width: 14px; height: 14px;"></i> Kelola PlayStation
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="col-lg-6">
+                    <article class="white-block mb-4">
+                        <div class="top-cat-title">
+                            <h3>Jumlah Console per Ruangan</h3>
+                        </div>
+                        <canvas id="consoleRoomChart" aria-label="Console per Room Chart" role="img"></canvas>
+                    </article>
+                </div>
+
+
+                <!-- Paket Populer -->
+                <div class="col-md-6 col-xl-3">
                     <article class="white-block">
                         <div class="top-cat-title">
                             <h3>Paket Populer</h3>
@@ -298,93 +259,103 @@
                     </article>
                 </div>
             </div>
-
-            <!-- Quick Actions -->
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="mb-3">Quick Actions</h5>
-                            <div class="row g-3">
-                                <div class="col-md-3">
-                                    <a href="" class="btn btn-primary w-100">
-                                        <i data-feather="plus-circle" style="width: 18px; height: 18px;"></i>
-                                        <span class="d-block mt-1">Reservasi Baru</span>
-                                    </a>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="" class="btn btn-info w-100">
-                                        <i data-feather="monitor" style="width: 18px; height: 18px;"></i>
-                                        <span class="d-block mt-1">Tambah PlayStation</span>
-                                    </a>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="" class="btn btn-warning w-100">
-                                        <i data-feather="users" style="width: 18px; height: 18px;"></i>
-                                        <span class="d-block mt-1">Kelola Member</span>
-                                    </a>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="" class="btn btn-success w-100">
-                                        <i data-feather="file-text" style="width: 18px; height: 18px;"></i>
-                                        <span class="d-block mt-1">Laporan</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="users-table table-wrapper">
+                <table class="posts-table">
+                    <thead>
+                        <tr class="users-table-info">
+                            <th>
+                                <label class="users-table__checkbox ms-20">
+                                    <input type="checkbox" class="check-all">Console
+                                </label>
+                            </th>
+                            <th>Customer</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Duration (Hours)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($latestReservations as $reservation)
+                            <tr>
+                                <td>
+                                    {{ $reservation->console->nama_unit ?? '-' }}
+                                </td>
+                                <td>
+                                    {{ $reservation->customer->name ?? '-' }}
+                                </td>
+                                <td>
+                                    @if ($reservation->status == 'pending')
+                                        <span class="badge-pending">Pending</span>
+                                    @elseif($reservation->status == 'active')
+                                        <span class="badge-active">Active</span>
+                                    @elseif($reservation->status == 'selesai' || $reservation->status == 'Selesai')
+                                        <span class="badge-success">Selesai</span>
+                                    @else
+                                        <span class="badge-inactive">Cancelled</span>
+                                    @endif
+                                </td>
+                                <td>{{ \Carbon\Carbon::parse($reservation->tanggal_bermain)->format('d.m.Y') }}</td>
+                                <td>{{ $reservation->durasi_jam ?? '-' }}</td>
+                                <td>
+                                    <span class="p-relative">
+                                        <button class="dropdown-btn transparent-btn" type="button" title="More info">
+                                            <div class="sr-only">More info</div>
+                                            <i data-feather="more-horizontal" aria-hidden="true"></i>
+                                        </button>
+                                        <ul class="users-item-dropdown dropdown">
+                                            <li>
+                                                <a
+                                                    href="{{ route('admin.reservations.edit', $reservation->id) }}">Edit</a>
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="{{ route('admin.reservations.show', $reservation->id) }}">View</a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ route('admin.reservations.destroy', $reservation->id) }}"
+                                                    onclick="event.preventDefault(); document.getElementById('delete-form-{{ $reservation->id }}').submit();">
+                                                    Trash
+                                                </a>
+                                                <form id="delete-form-{{ $reservation->id }}"
+                                                    action="{{ route('admin.reservations.destroy', $reservation->id) }}"
+                                                    method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <i data-feather="inbox" style="width: 48px; height: 48px; opacity: 0.3;"></i>
+                                    <p class="text-muted mt-2">No reservations found</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
+
+            {{-- Pagination --}}
+            @if ($latestReservations->hasPages())
+                <div class="mt-4">
+                    {{ $latestReservations->links('pagination::bootstrap-5') }}
+                </div>
+            @endif
+
         </div>
     </main>
 
     @push('scripts')
         <script>
-            // Inisialisasi Feather Icons
-            if (typeof feather !== 'undefined') {
-                feather.replace();
-            }
+            // Feather Icons
+            if (typeof feather !== 'undefined') feather.replace();
 
-            // Chart Pendapatan (Line Chart)
-            const ctx = document.getElementById('myChart');
-            if (ctx) {
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: {!! json_encode($revenueLabels ?? ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min']) !!},
-                        datasets: [{
-                            label: 'Pendapatan (Rp)',
-                            data: {!! json_encode($revenueData ?? [0, 0, 0, 0, 0, 0, 0]) !!},
-                            borderColor: 'rgb(75, 192, 192)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'bottom'
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    callback: function(value) {
-                                        return 'Rp ' + value.toLocaleString('id-ID');
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Chart Status PS (Donut Chart)
+            // Chart Status PS
             const statusCtx = document.getElementById('customersChart');
             if (statusCtx) {
                 new Chart(statusCtx, {
@@ -392,16 +363,8 @@
                     data: {
                         labels: ['Tersedia', 'Dipesan', 'Perbaikan'],
                         datasets: [{
-                            data: [
-                                {{ $availablePS ?? 0 }},
-                                {{ $activePS ?? 0 }},
-                                {{ $maintenancePS ?? 0 }}
-                            ],
-                            backgroundColor: [
-                                '#22c55e', // hijau
-                                '#f59e0b', // kuning
-                                '#ef4444' // merah
-                            ],
+                            data: [{{ $availablePS ?? 0 }}, {{ $activePS ?? 0 }}, {{ $maintenancePS ?? 0 }}],
+                            backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'],
                             borderWidth: 3,
                             borderColor: '#ffffff'
                         }]
@@ -428,6 +391,41 @@
                     }
                 });
             }
+
+            const ctxRoom = document.getElementById('consoleRoomChart').getContext('2d');
+
+            new Chart(ctxRoom, {
+                type: 'bar', // bisa diganti 'pie', 'doughnut', dsb
+                data: {
+                    labels: {!! json_encode($roomLabels) !!}, // nama ruangan
+                    datasets: [{
+                        label: 'Jumlah Console',
+                        data: {!! json_encode($roomData) !!}, // jumlah console
+                        backgroundColor: '#4e73df', // warna bar
+                        borderColor: '#2e59d9',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            } // supaya angka tidak pecahan
+                        }
+                    }
+                }
+            });
         </script>
     @endpush
 @endsection

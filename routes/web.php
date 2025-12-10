@@ -22,11 +22,8 @@ Route::get('/register', [HomeController::class, 'register'])->name('home.registe
 Route::get('/rooms', [HomeController::class, 'rooms'])->name('home.rooms');
 Route::get('/rooms/{id}', [HomeController::class, 'show'])->name('room.detail');
 Route::get('/consoles', [HomeController::class, 'console'])->name('home.consoles');
-Route::get('/reservasi-hari-ini', [ReservationController::class, 'today'])
-    ->name('reservation.today');
-
-Route::get('/reservasi-mendatang', [ReservationController::class, 'upcoming'])
-    ->name('reservation.upcoming');
+Route::get('/reservasi-hari-ini', [ReservationController::class, 'today'])->name('reservation.today');
+Route::get('/reservasi-mendatang', [ReservationController::class, 'upcoming'])->name('reservation.upcoming');
 
 
 Route::get('/auth/google', [AuthenticationController::class, 'redirectToGoogle'])->name('redirect.google');

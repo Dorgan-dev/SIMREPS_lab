@@ -69,28 +69,6 @@ class HomeController extends Controller
         return view('guest.console', compact('consoles'));
     }
 
-    // JADWAL HARI INI
-    public function today()
-    {
-        $reservations = Reservation::whereDate('tanggal_bermain', Carbon::today())
-            ->with(['console.room'])
-            ->orderBy('waktu_mulai', 'asc')
-            ->get();
-
-        return view('guest.reservation-today', compact('reservations'));
-    }
-
-    // RESERVASI MENDATANG
-    public function upcoming()
-    {
-        $reservations = Reservation::whereDate('tanggal_bermain', '>', Carbon::today())
-            ->with(['console.room'])
-            ->orderBy('tanggal_bermain', 'asc')
-            ->get();
-
-        return view('guest.reservation-upcoming', compact('reservations'));
-    }
-
     /**
      * Show the form for creating a new resource.
      */

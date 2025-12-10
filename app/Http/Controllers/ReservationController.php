@@ -10,28 +10,30 @@ use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
-    // ============================
-    // ADMIN - INDEX
-    // ============================
+    /* ============================================================
+     | ADMIN - INDEX (default: riwayat)
+     ============================================================ */
     public function index()
     {
-        $data = Reservation::with(['console.room'])
+        // Ambil data reservasi beserta console dan customer
+        $reservations = Reservation::with(['console', 'customer'])
             ->latest()
             ->paginate(10);
 
-        $mode = 'riwayat';
-
         return view('_admin.reservation', [
-            'reservations' => $data,
-            'mode' => 'pengajuan' // atau berjalan / riwayat
+            'reservations' => $reservations, // kirim variabel reservations ke view
+            'mode' => 'riwayat'
         ]);
     }
 
+    /* ============================================================
+     | ADMIN - PENDING (Menunggu konfirmasi)
+     ============================================================ */
     public function pending()
     {
-        $reservations = Reservation::with('console.room', 'approver')
-            ->where('status', 'menunggu')
-            ->orderBy('waktu_mulai', 'asc')
+        $reservations = Reservation::with('console.room')
+            ->where('status', 'Menunggu')
+            ->orderBy('waktu_mulai')
             ->get();
 
         return view('_admin.reservation', [
@@ -40,16 +42,14 @@ class ReservationController extends Controller
         ]);
     }
 
-
-
-    // ============================
-    // ADMIN - STORE
-    // ============================
+    /* ============================================================
+     | ADMIN - STORE MANUAL
+     ============================================================ */
     public function store(Request $request)
     {
         $request->validate([
-            'customer_id'     => 'required|numeric|exists:users,id',
-            'console_id'      => 'required|numeric|exists:consoles,id',
+            'customer_id'     => 'required|exists:users,id',
+            'console_id'      => 'required|exists:consoles,id',
             'tanggal_bermain' => 'required|date',
             'waktu_mulai'     => 'required',
             'durasi_jam'      => 'required|integer|min:1',
@@ -57,19 +57,18 @@ class ReservationController extends Controller
             'status'          => 'required|in:Dipesan,Berlangsung,Selesai,Dibatalkan',
         ]);
 
-        // Hitung waktu mulai & selesai
         $start = Carbon::parse($request->tanggal_bermain . ' ' . $request->waktu_mulai);
         $end   = $start->copy()->addHours($request->durasi_jam);
 
         Reservation::create([
-            'customer_id'    => $request->customer_id,
-            'console_id'     => $request->console_id,
+            'customer_id'     => $request->customer_id,
+            'console_id'      => $request->console_id,
             'tanggal_bermain' => $request->tanggal_bermain,
-            'waktu_mulai'    => $start,
-            'durasi_jam'     => $request->durasi_jam,
-            'waktu_selesai'  => $end,
-            'disetujui_oleh' => $request->disetujui_oleh,
-            'status'         => $request->status,
+            'waktu_mulai'     => $start,
+            'waktu_selesai'   => $end,
+            'durasi_jam'      => $request->durasi_jam,
+            'disetujui_oleh'  => $request->disetujui_oleh,
+            'status'          => $request->status,
         ]);
 
         return redirect()
@@ -77,92 +76,81 @@ class ReservationController extends Controller
             ->with('success', 'Data reservasi berhasil ditambahkan!');
     }
 
-
-    // ============================
-    // CUSTOMER - STORE
-    // ============================
+    /* ============================================================
+     | CUSTOMER - MEMBUAT RESERVASI
+     ============================================================ */
     public function customerStore(Request $request)
     {
         $validated = $request->validate([
-            'console_id' => 'required|exists:consoles,id',
+            'console_id'      => 'required|exists:consoles,id',
             'tanggal_bermain' => 'required|date',
-            'waktu_mulai' => 'required|date_format:H:i',
-            'durasi_jam' => 'required|integer|min:1',
-            'status' => 'required|string',
+            'waktu_mulai'     => 'required|date_format:H:i',
+            'durasi_jam'      => 'required|integer|min:1',
         ]);
 
-        $start = \Carbon\Carbon::parse($validated['tanggal_bermain'] . ' ' . $validated['waktu_mulai'])
+        $start = Carbon::parse($validated['tanggal_bermain'] . ' ' . $validated['waktu_mulai'])
             ->timezone('Asia/Jakarta');
 
-        $end = $start->copy()->addHours((int) $validated['durasi_jam']);
+        $end = $start->copy()->addHours($validated['durasi_jam']);
 
-        $reservation = Reservation::create([
-            'cust_id' => Auth::id(),
-            'console_id' => $validated['console_id'],
-            'waktu_mulai' => $start,
-            'waktu_selesai' => $end,
-            'durasi_jam' => (int) $validated['durasi_jam'],
-            'status' => 'Menunggu',
+        Reservation::create([
+            'cust_id'         => Auth::id(),
+            'console_id'      => $validated['console_id'],
+            'tanggal_bermain' => $validated['tanggal_bermain'],
+            'waktu_mulai'     => $start,
+            'waktu_selesai'   => $end,
+            'durasi_jam'      => $validated['durasi_jam'],
+            'status'          => 'Menunggu',
         ]);
 
-        // Update status console jadi "Dipesan"
+        // Update status console
         $console = Console::find($validated['console_id']);
         if ($console) {
-            $console->status = 'Dipesan'; // pastikan 'Dipesan' ada di enum status console
+            $console->status = 'Dipesan';
             $console->save();
         }
 
-        return back()->with('success', 'Reservasi berhasil dibuat dan status console diperbarui!');
+        return back()->with('success', 'Reservasi berhasil dibuat!');
     }
 
-    public function pengajuan()
-    {
-        $data = Reservation::with(['console.room'])
-            ->where('status', 'Menunggu')
-            ->orderBy('waktu_mulai', 'asc')
-            ->paginate(10);
-
-        return view('_admin.reservation', [
-            'data' => $data,
-            'mode' => 'pengajuan'
-        ]);
-    }
-
-
-
+    /* ============================================================
+     | ADMIN - SETUJUI / TOLAK
+     ============================================================ */
     public function approve($id)
     {
         $reservation = Reservation::findOrFail($id);
 
         $reservation->update([
-            'status' => 'Diterima',
-            'disetujui_oleh' => Auth::user()->id
+            'status'         => 'Diterima',
+            'disetujui_oleh' => Auth::id(),
         ]);
 
         return back()->with('success', 'Reservasi disetujui.');
     }
-
 
     public function reject($id)
     {
         $reservation = Reservation::findOrFail($id);
 
         $reservation->update([
-            'status' => 'Ditolak',
-            'disetujui_oleh' => Auth::user()->id
+            'status'         => 'Ditolak',
+            'disetujui_oleh' => Auth::id(),
         ]);
 
         return back()->with('error', 'Reservasi ditolak.');
     }
 
+    /* ============================================================
+     | ADMIN - SEDANG BERJALAN
+     ============================================================ */
     public function running()
     {
         $now = now();
 
-        $reservations = Reservation::with('console.room', 'approver')
+        $reservations = Reservation::with('console.room')
             ->whereIn('status', ['Berlangsung', 'Diterima'])
             ->where('waktu_selesai', '>', $now)
-            ->orderBy('waktu_mulai', 'asc')
+            ->orderBy('waktu_mulai')
             ->get();
 
         return view('_admin.reservation', [
@@ -171,9 +159,12 @@ class ReservationController extends Controller
         ]);
     }
 
+    /* ============================================================
+     | ADMIN - RIWAYAT
+     ============================================================ */
     public function history()
     {
-        $reservations = Reservation::with('console.room', 'approver')
+        $reservations = Reservation::with('console.room')
             ->whereIn('status', ['Selesai', 'Ditolak', 'Dibatalkan'])
             ->orderBy('waktu_mulai', 'desc')
             ->get();
@@ -184,74 +175,43 @@ class ReservationController extends Controller
         ]);
     }
 
-
-
-    // ============================
-    // ADMIN - UPDATE
-    // ============================
-    public function update(Request $request, string $id)
-    {
-        $request->validate([
-            'customer_id'     => 'required|numeric',
-            'console_id'      => 'required|numeric',
-            'tanggal'         => 'required|date',
-            'waktu_mulai'     => 'required',
-            'durasi_jam'      => 'required|integer|min:1',
-            'disetujui_oleh'  => 'required|string',
-            'status'          => 'required|in:Dipesan,Berlangsung,Selesai,Dibatalkan',
-        ]);
-
-        $reservation = Reservation::findOrFail($id);
-
-        $start = Carbon::parse($request->tanggal . ' ' . $request->waktu_mulai);
-        $end   = $start->copy()->addHours($request->durasi_jam);
-
-        $reservation->update([
-            'customer_id'   => $request->customer_id,
-            'console_id'    => $request->console_id,
-            'tanggal'       => $request->tanggal,
-            'waktu_mulai'    => $start,
-            'durasi_jam'     => $request->durasi_jam,
-            'waktu_selesai'  => $end,
-            'disetujui_oleh' => $request->disetujui_oleh,
-            'status'         => $request->status,
-        ]);
-
-        return back()->with('success', 'Data reservasi berhasil diperbarui!');
-    }
-
-    // ✅ JADWAL HARI INI
+    /* ============================================================
+     | JADWAL HARI INI
+     ============================================================ */
     public function today()
     {
-        $today = Carbon::today();
+        $today = Carbon::today()->toDateString();
 
         $reservations = Reservation::with(['console.room'])
             ->whereDate('waktu_mulai', $today)
-            ->orderBy('waktu_mulai', 'asc')
+            ->orderBy('waktu_mulai')
             ->get();
 
         return view('guest.reservations-today', compact('reservations'));
     }
 
-    // ✅ RESERVASI MENDATANG
+    /* ============================================================
+     | JADWAL MENDATANG
+     ============================================================ */
     public function upcoming()
     {
-        $today = Carbon::today();
+        $today = Carbon::today()->toDateString();
 
         $reservations = Reservation::with(['console.room'])
             ->whereDate('waktu_mulai', '>', $today)
-            ->orderBy('waktu_mulai', 'asc')
+            ->orderBy('waktu_mulai')
             ->get();
 
         return view('guest.reservations-upcoming', compact('reservations'));
     }
 
-    // ============================
-    // ADMIN - DELETE
-    // ============================
-    public function destroy(string $id)
+    /* ============================================================
+     | HAPUS RESERVASI
+     ============================================================ */
+    public function destroy($id)
     {
         Reservation::findOrFail($id)->delete();
+
         return back()->with('success', 'Data reservasi berhasil dihapus!');
     }
 }
