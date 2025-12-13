@@ -17,7 +17,21 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        return view('_admin.profile');
+        $role = Auth::user()->role;
+
+        switch ($role) {
+            case 1: // Admin
+                return view('_admin.profile');
+
+            case 2: // Resepsionist
+                return view('_resepsionist.profile');
+
+            case 3: // Customer
+                return view('_customer.profile');
+
+            default:
+                abort(403, 'Unauthorized');
+        }
     }
 
     /**
@@ -127,26 +141,27 @@ class ProfileController extends Controller
         $auth = Auth::user();
         $user = User::findOrFail($auth->id);
 
-        // Validasi password baru
+        // Validasi password baru dulu
         $request->validate([
             'new_password' => 'required|min:6|confirmed',
         ]);
 
-        // CASE 1 : USER GOOGLE BELUM PERNAH SET PASSWORD
+        // CASE 1 : USER GOOGLE & BELUM PERNAH SET PASSWORD
         if ($user->google_id && !$user->password_set) {
 
             $user->update([
                 'password' => Hash::make($request->new_password),
-                'password_set' => true,     // tandai sudah punya password manual
+                'password_set' => 1,
             ]);
 
             return back()->with('success', 'Password berhasil dibuat!');
         }
 
-        // CASE 2 : USER GOOGLE SUDAH SET PASSWORD / USER BIASA
+        // CASE 2 : USER BIASA ATAU USER GOOGLE YANG SUDAH SET PASSWORD
         $request->validate([
             'current_password' => 'required',
         ]);
+
         if (!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors([
                 'current_password' => 'Password lama salah!',

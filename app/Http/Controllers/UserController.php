@@ -4,22 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function index()
     {
+        $auth = Auth::user();
         $user = User::where('role', 3)->get();
+        if ($auth->role != 1) {
+            return view('_reseptionist.user', compact('user'));
+        }
         return view('_admin.user', compact('user'));
     }
 
     public function staff()
     {
-        $user = User::where('role', '!=', 3)->get();
+        $user = User::where('role','!=',3)->get();
         return view('_admin.user', compact('user'));
     }
-
 
     public function create()
     {

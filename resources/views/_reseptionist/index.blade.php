@@ -1,4 +1,4 @@
-@extends('_admin.layouts.app')
+@extends('_reseptionist.layouts.app')
 
 @section('content')
     <main class="main users chart-page" id="skip-target">

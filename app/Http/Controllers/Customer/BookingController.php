@@ -35,7 +35,7 @@ class BookingController extends Controller
         ->where('status', 'Tersedia')
         ->get();
 
-        return view('_customer.booking.consoles', compact('consoles'));
+        return view('guest.console', compact('consoles'));
     }
 
     /**
@@ -76,7 +76,7 @@ class BookingController extends Controller
             $tanggal = $validated['tanggal'];
             $waktuMulai = $tanggal . ' ' . $validated['waktu_mulai'];
             $durasiJam = (int) $validated['durasi_jam']; // CAST ke integer
-            
+
             // Hitung waktu selesai
             $waktuSelesai = Carbon::parse($waktuMulai)->addHours($durasiJam)->format('Y-m-d H:i:s');
 

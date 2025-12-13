@@ -13,10 +13,11 @@ class AuthenticationController extends Controller
 {
     public function index()
     {
-        // Jika pengguna sudah login, redirect ke halaman sesuai dengan role
+
         if (Auth::check()) {
-            return $this->redirectByRole(Auth::user()->role);
+            return redirect()->back();
         }
+
 
         return view('guest.login');
     }
@@ -34,9 +35,7 @@ class AuthenticationController extends Controller
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            return $this->redirectByRole(Auth::user()->role);
+            return redirect()->back();
         }
 
         return back()->with('error', 'Username atau password salah.');

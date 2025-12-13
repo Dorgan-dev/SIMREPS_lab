@@ -205,7 +205,7 @@
                         <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
                         <h5 class="mt-3">Belum Ada Booking</h5>
                         <p class="text-muted">Anda belum memiliki riwayat booking. Mulai booking sekarang!</p>
-                        <a href="{{ route('booking.consoles') }}" class="mt-3 btn btn-primary">
+                        <a href="{{ route('home.rooms') }}" class="mt-3 btn btn-primary">
                             <i class="bi bi-plus-circle"></i> Booking Sekarang
                         </a>
                     </div>

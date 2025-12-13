@@ -18,7 +18,7 @@ class CheckGuest
             }
 
             if (Auth::user()->role == 2) {
-                return redirect()->route('user.reseptionis');
+                return redirect()->route('reseptionist.dashboard');
             }
 
             return redirect()->route('customer.dashboard');

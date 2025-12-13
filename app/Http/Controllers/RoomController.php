@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Room;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RoomController extends Controller
 {
@@ -12,7 +13,11 @@ class RoomController extends Controller
      */
     public function index()
     {
+        $auth = Auth::user();
         $data = Room::paginate(10);
+        if ($auth->role != 1) {
+            return view('_reseptionist.room', compact('data'));
+        }
         return view('_admin.room', compact('data'));
     }
 
@@ -29,7 +34,6 @@ class RoomController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $validated = $request->validate([
             'name'           => 'required|string|max:255',
             'category'       => 'nullable|string|max:255',

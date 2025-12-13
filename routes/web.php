@@ -6,14 +6,15 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ConsoleController;
-use App\Http\Controllers\SettingController;
-use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AuthenticationController;
-
-
-use App\Http\Controllers\Customer\BookingController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ReservationController;
+
+
+use App\Http\Controllers\ReseptionistController;
+use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Customer\BookingController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('home.about');
@@ -51,24 +52,11 @@ Route::middleware(['checkislogin', 'checkrole:1'])
         Route::resource('/reservations', ReservationController::class);
         Route::resource('/consoles', ConsoleController::class);
 
-        // ✅ REQUEST (PENDING)
-        Route::get('/reservations-pending', [ReservationController::class, 'pending'])
-            ->name('reservations.pending');
-
-        Route::post('/reservations/{id}/approve', [ReservationController::class, 'approve'])
-            ->name('reservations.approve');
-
-        Route::post('/reservations/{id}/reject', [ReservationController::class, 'reject'])
-            ->name('reservations.reject');
-
-        // ✅ ONGOING
-        Route::get('/reservations-ongoing', [ReservationController::class, 'running'])
-            ->name('reservations.ongoing');
-
-        // ✅ HISTORY (ALL)
-        Route::get('/reservations-history', [ReservationController::class, 'history'])
-            ->name('reservations.history');
-
+        Route::get('/reservations-pending', [ReservationController::class, 'pending'])->name('reservations.pending');
+        Route::post('/reservations/{id}/approve', [ReservationController::class, 'approve'])->name('reservations.approve');
+        Route::post('/reservations/{id}/reject', [ReservationController::class, 'reject'])->name('reservations.reject');
+        Route::get('/reservations-ongoing', [ReservationController::class, 'running'])->name('reservations.ongoing');
+        Route::get('/reservations-history', [ReservationController::class, 'history'])->name('reservations.history');
 
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
@@ -91,13 +79,22 @@ Route::middleware(['checkislogin', 'checkrole:1'])
     });
 
 Route::middleware(['checkislogin', 'checkrole:2'])
-    ->prefix('resepsionist')
-    ->name('resepsionist.')
+    ->prefix('reseptionist')
+    ->name('reseptionist.')
     ->group(function () {
 
-        Route::get('/', function () {
-            return view('_resepsionist.index');
-        })->name('dashboard');
+        Route::get('/', [ReseptionistController::class, 'index'])->name('dashboard');
+
+        Route::resource('/customers', UserController::class);
+        Route::resource('/rooms', RoomController::class);
+        Route::resource('/reservations', ReservationController::class);
+        Route::resource('/consoles', ConsoleController::class);
+
+        Route::get('/reservations-pending', [ReservationController::class, 'pending'])->name('reservations.pending');
+        Route::post('/reservations/{id}/approve', [ReservationController::class, 'approve'])->name('reservations.approve');
+        Route::post('/reservations/{id}/reject', [ReservationController::class, 'reject'])->name('reservations.reject');
+        Route::get('/reservations-ongoing', [ReservationController::class, 'running'])->name('reservations.ongoing');
+        Route::get('/reservations-history', [ReservationController::class, 'history'])->name('reservations.history');
 
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
@@ -111,38 +108,29 @@ Route::middleware(['checkislogin', 'checkrole:3'])
 
         Route::get('/', [CustomerController::class, 'index'])->name('dashboard');
 
-
         Route::post('/reservation', [ReservationController::class, 'customerStore'])->name('reservation.store');
 
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-        Route::put('/profile/password', [ProfileController::class, 'changePassword'])->name('change-password');
+        Route::post('/profile/photo/update', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
+        Route::post('/profile/password', [ProfileController::class, 'changePassword'])->name('change-password');
     });
 
 Route::get('404', function ($id) {})->name('404');
 
 // CUSTOMER
+Route::middleware(['checkislogin', 'checkrole:3'])
+    ->prefix('booking')
+    ->name('booking.')
+    ->group(function () {
 
-Route::middleware(['auth', 'checkrole:3'])->prefix('booking')->name('booking.')->group(function () {
+        Route::get('/', [BookingController::class, 'index'])->name('index');
+        Route::get('/consoles', [BookingController::class, 'showConsoles'])->name('consoles');
+        Route::get('/{console}/schedule', [BookingController::class, 'showSchedule'])->name('schedule');
 
-    // Halaman riwayat booking user
-    Route::get('/', [BookingController::class, 'index'])->name('index');
+        Route::post('/check-availability', [BookingController::class, 'checkAvailability'])->name('check');
+        Route::post('/store', [BookingController::class, 'store'])->name('store');
 
-    // Halaman daftar console untuk booking baru
-    Route::get('/consoles', [BookingController::class, 'showConsoles'])->name('consoles');
-
-    // Halaman pilih jadwal untuk console tertentu
-    Route::get('/{console}/schedule', [BookingController::class, 'showSchedule'])->name('schedule');
-
-    // Check availability (AJAX)
-    Route::post('/check-availability', [BookingController::class, 'checkAvailability'])->name('check');
-
-    // Simpan booking
-    Route::post('/store', [BookingController::class, 'store'])->name('store');
-
-    // Detail booking
-    Route::get('/{reservation}/detail', [BookingController::class, 'detail'])->name('detail');
-
-    // Batalkan booking
-    Route::put('/{reservation}/cancel', [BookingController::class, 'cancel'])->name('cancel');
-});
+        Route::get('/{reservation}/detail', [BookingController::class, 'detail'])->name('detail');
+        Route::put('/{reservation}/cancel', [BookingController::class, 'cancel'])->name('cancel');
+    });

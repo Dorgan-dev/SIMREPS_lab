@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Mazer Admin Dashboard</title>
+    <title>SIMREPS | Customer Dashboard</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -24,13 +24,17 @@
     <div id="app">
         <div id="sidebar" class="active">
             <div class="sidebar-wrapper active">
-                <div class="sidebar-header">
-                    <div class="d-flex justify-content-between">
-                        <div class="logo">
-                            <a href="index.html"><img src="{{ asset('_customer/images/logo/logo.png') }}" alt="Logo"
-                                    srcset=""></a>
+                <div class="sidebar-header position-relative">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="logo bg-white rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 55px; height: 55px; flex-shrink: 0; border: 2px solid #007BFF; border-radius: 50%;">
+                            <a href="{{ route('home') }}">
+                                <img src="{{ asset(getSetting('site_logo')) }}" alt="Logo SIMREPS"
+                                    style="width: 40px; height: 40px; object-fit: contain;">
+                            </a>
                         </div>
-                        <div class="gap-2 mt-2 theme-toggle d-flex align-items-center">
+                        <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
+                            <h6 class="pt-2">SIMREPS</h6>
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                 aria-hidden="true" role="img" class="iconify iconify--system-uicons" width="20"
                                 height="20" preserveAspectRatio="xMidYMid meet" viewBox="0 0 21 21">
@@ -48,7 +52,7 @@
                                 </g>
                             </svg>
                             <div class="form-check form-switch fs-6">
-                                <input class="form-check-input me-0" type="checkbox" id="toggle-dark"
+                                <input class="form-check-input  me-0" type="checkbox" id="toggle-dark"
                                     style="cursor: pointer">
                                 <label class="form-check-label"></label>
                             </div>
@@ -60,26 +64,48 @@
                                 </path>
                             </svg>
                         </div>
+                        <div class="sidebar-toggler x pb-9" style="margin-right: 1.6rem;">
+                            <a href="#" class="sidebar-hide d-xl-none d-block"><i
+                                    class="bi bi-x bi-middle"></i></a>
+                        </div>
                     </div>
                 </div>
+
                 <div class="sidebar-menu">
                     <ul class="menu">
                         <li class="sidebar-title">Menu</li>
 
-                        <li class="sidebar-item ">
+                        <li class="sidebar-item mb-2">
+                            <a href="{{ route('customer.profile') }}" class="sidebar-link p-0">
+                                <div class="d-flex align-items-center w-100 p-3 rounded"
+                                    style="background-color: rgba(108, 117, 125, 0.1);">
+                                    <img id="current-photo" src="{{ auth()->user()->profile_photo_url }}"
+                                        class="rounded-circle border border-2 border-primary me-3"
+                                        style="width: 48px; height: 48px; object-fit: cover;" alt="Current">
+                                    <div>
+                                        <div class="fw-bold mb-0">{{ Auth::user()->name }}</div>
+                                        <small class="text-primary">
+                                            {{ Auth::user()->role == 1 ? 'Administrator' : (Auth::user()->role == 2 ? 'Resepsionis' : 'Pelanggan') }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
                             <a href="{{ route('customer.dashboard') }}" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
+
                         <li class="sidebar-item">
                             <a href="{{ route('booking.index') }}" class='sidebar-link'>
                                 <i class="bi bi-calendar-check"></i>
-                                <span>Booking</span>
+                                <span>Data Pemesanan</span>
                             </a>
                         </li>
 
-                        {{-- https://github.com/zuramai/mazer#donate --}}
                         <li class="sidebar-item">
                             <a href="#" class="sidebar-link"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Room;
 use App\Models\Console;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ConsoleController extends Controller
 {
@@ -21,6 +22,11 @@ class ConsoleController extends Controller
         $console['data'] = $query->paginate(10)->withQueryString();
         $console['rooms'] = Room::orderBy('name')->get();
 
+
+        $auth = Auth::user();
+        if ($auth->role != 1) {
+            return view('_reseptionist.console', $console);
+        }
         return view('_admin.console', $console);
     }
 

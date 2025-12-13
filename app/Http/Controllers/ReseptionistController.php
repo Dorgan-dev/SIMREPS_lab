@@ -11,7 +11,7 @@ use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class AdminController extends Controller
+class ReseptionistController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -108,7 +108,7 @@ class AdminController extends Controller
         // =====================================================
         // 10. RETURN KE VIEW
         // =====================================================
-        return view('_admin.index', compact(
+        return view('_reseptionist.index', compact(
             'totalPS',
             'availablePS',
             'bookedRoomsPercent',
@@ -140,9 +140,6 @@ class AdminController extends Controller
         ));
     }
 
-    /**
-     * Ambil data pendapatan 7 hari terakhir
-     */
     private function getWeeklyRevenue(): array
     {
         $labels = [];
@@ -162,23 +159,7 @@ class AdminController extends Controller
 
         return [$labels, $data];
     }
-
-    public function customer()
-    {
-        $users = User::all();
-        return view('_admin.customer', compact('users'));
-    }
-
-    public function profile()
-    {
-        return view('_admin.profile');
-    }
-
-    public function resep()
-    {
-        return view('_reseptionist.index');
-    }
-
+    
     /**
      * Show the form for creating a new resource.
      */
@@ -214,7 +195,10 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request) {}
+    public function update(Request $request, string $id)
+    {
+        //
+    }
 
     /**
      * Remove the specified resource from storage.

@@ -20,7 +20,14 @@ class ReservationController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('_admin.reservation', [
+        $auth = Auth::user();
+        if ($auth->role == 1) {
+            return view('_admin.reservation', [
+                'reservations' => $reservations, // kirim variabel reservations ke view
+                'mode' => 'riwayat'
+            ]);
+        }
+        return view('_reseptionist.reservation', [
             'reservations' => $reservations, // kirim variabel reservations ke view
             'mode' => 'riwayat'
         ]);
@@ -36,44 +43,17 @@ class ReservationController extends Controller
             ->orderBy('waktu_mulai')
             ->get();
 
-        return view('_admin.reservation', [
+        $auth = Auth::user();
+        if ($auth->role == 1) {
+            return view('_admin.reservation', [
+                'reservations' => $reservations,
+                'mode' => 'pengajuan',
+            ]);
+        }
+        return view('_reseptionist.reservation', [
             'reservations' => $reservations,
             'mode' => 'pengajuan',
         ]);
-    }
-
-    /* ============================================================
-     | ADMIN - STORE MANUAL
-     ============================================================ */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'customer_id'     => 'required|exists:users,id',
-            'console_id'      => 'required|exists:consoles,id',
-            'tanggal_bermain' => 'required|date',
-            'waktu_mulai'     => 'required',
-            'durasi_jam'      => 'required|integer|min:1',
-            'disetujui_oleh'  => 'required|string|max:100',
-            'status'          => 'required|in:Dipesan,Berlangsung,Selesai,Dibatalkan',
-        ]);
-
-        $start = Carbon::parse($request->tanggal_bermain . ' ' . $request->waktu_mulai);
-        $end   = $start->copy()->addHours($request->durasi_jam);
-
-        Reservation::create([
-            'customer_id'     => $request->customer_id,
-            'console_id'      => $request->console_id,
-            'tanggal_bermain' => $request->tanggal_bermain,
-            'waktu_mulai'     => $start,
-            'waktu_selesai'   => $end,
-            'durasi_jam'      => $request->durasi_jam,
-            'disetujui_oleh'  => $request->disetujui_oleh,
-            'status'          => $request->status,
-        ]);
-
-        return redirect()
-            ->route('reservation.index')
-            ->with('success', 'Data reservasi berhasil ditambahkan!');
     }
 
     /* ============================================================
@@ -88,19 +68,19 @@ class ReservationController extends Controller
             'durasi_jam'      => 'required|integer|min:1',
         ]);
 
+        // Gabungkan tanggal + jam → jadi datetime
         $start = Carbon::parse($validated['tanggal_bermain'] . ' ' . $validated['waktu_mulai'])
             ->timezone('Asia/Jakarta');
 
-        $end = $start->copy()->addHours($validated['durasi_jam']);
+        $end = $start->copy()->addHours((int) $validated['durasi_jam']);
 
         Reservation::create([
-            'cust_id'         => Auth::id(),
-            'console_id'      => $validated['console_id'],
-            'tanggal_bermain' => $validated['tanggal_bermain'],
-            'waktu_mulai'     => $start,
-            'waktu_selesai'   => $end,
-            'durasi_jam'      => $validated['durasi_jam'],
-            'status'          => 'Menunggu',
+            'cust_id'        => Auth::id(),
+            'console_id'     => $validated['console_id'],
+            'waktu_mulai'    => $start,
+            'waktu_selesai'  => $end,
+            'durasi_jam'     => $validated['durasi_jam'],
+            'status'         => 'Menunggu',
         ]);
 
         // Update status console
@@ -153,7 +133,14 @@ class ReservationController extends Controller
             ->orderBy('waktu_mulai')
             ->get();
 
-        return view('_admin.reservation', [
+        $auth = Auth::user();
+        if ($auth->role == 1) {
+            return view('_admin.reservation', [
+                'reservations' => $reservations,
+                'mode' => 'berjalan',
+            ]);
+        }
+        return view('_reseptionist.reservation', [
             'reservations' => $reservations,
             'mode' => 'berjalan',
         ]);
@@ -169,7 +156,14 @@ class ReservationController extends Controller
             ->orderBy('waktu_mulai', 'desc')
             ->get();
 
-        return view('_admin.reservation', [
+        $auth = Auth::user();
+        if ($auth->role == 1) {
+            return view('_admin.reservation', [
+                'reservations' => $reservations,
+                'mode' => 'riwayat',
+            ]);
+        }
+        return view('_reseptionist.reservation', [
             'reservations' => $reservations,
             'mode' => 'riwayat',
         ]);
@@ -210,6 +204,10 @@ class ReservationController extends Controller
      ============================================================ */
     public function destroy($id)
     {
+        if (Auth::user()->role != 1) {
+            abort(403);
+        }
+
         Reservation::findOrFail($id)->delete();
 
         return back()->with('success', 'Data reservasi berhasil dihapus!');

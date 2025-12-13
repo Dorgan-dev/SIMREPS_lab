@@ -1,4 +1,4 @@
-@extends('_admin.layouts.app')
+@extends('_reseptionist.layouts.app')
 
 @section('content')
     <div class="m-4">

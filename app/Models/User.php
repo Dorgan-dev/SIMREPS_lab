@@ -14,7 +14,7 @@ class User extends Authenticatable
         'name',
         'username',
         'email',
-        'profile_photo', 
+        'profile_photo',
         'jenis_kelamin',
         'no_hp',
         'role',
@@ -60,5 +60,30 @@ class User extends Authenticatable
             return true;
         }
         return false;
+    }
+
+    public function isAdmin(): bool
+    {
+        return (int) $this->role === 1;
+    }
+
+    public function isResepsionist(): bool
+    {
+        return (int) $this->role === 2;
+    }
+
+    public function canApproveReservation(): bool
+    {
+        return in_array((int) $this->role, [1, 2]);
+    }
+
+    public function canDeleteReservation(): bool
+    {
+        return $this->isAdmin();
+    }
+
+    public function canManageMaster(): bool
+    {
+        return $this->isAdmin();
     }
 }
