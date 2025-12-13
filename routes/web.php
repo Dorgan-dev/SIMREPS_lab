@@ -10,9 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ReservationController;
-
-
-use App\Http\Controllers\ReseptionistController;
+use App\Http\Controllers\ReceptionistController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Customer\BookingController;
 
@@ -55,12 +53,12 @@ Route::middleware(['checkislogin', 'checkrole:1'])
         Route::get('/reservations-pending', [ReservationController::class, 'pending'])->name('reservations.pending');
         Route::post('/reservations/{id}/approve', [ReservationController::class, 'approve'])->name('reservations.approve');
         Route::post('/reservations/{id}/reject', [ReservationController::class, 'reject'])->name('reservations.reject');
-        Route::get('/reservations-ongoing', [ReservationController::class, 'running'])->name('reservations.ongoing');
         Route::get('/reservations-history', [ReservationController::class, 'history'])->name('reservations.history');
 
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::post('/profile/photo/update', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
+        Route::delete('/profile/photo/delete', [ProfileController::class, 'deletePhoto'])->name('profile.photo.delete');
         Route::post('/profile/password', [ProfileController::class, 'changePassword'])->name('change-password');
 
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
@@ -79,11 +77,11 @@ Route::middleware(['checkislogin', 'checkrole:1'])
     });
 
 Route::middleware(['checkislogin', 'checkrole:2'])
-    ->prefix('reseptionist')
-    ->name('reseptionist.')
+    ->prefix('receptionist')
+    ->name('receptionist.')
     ->group(function () {
 
-        Route::get('/', [ReseptionistController::class, 'index'])->name('dashboard');
+        Route::get('/', [ReceptionistController::class, 'index'])->name('dashboard');
 
         Route::resource('/customers', UserController::class);
         Route::resource('/rooms', RoomController::class);
@@ -98,7 +96,8 @@ Route::middleware(['checkislogin', 'checkrole:2'])
 
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-        Route::put('/profile/password', [ProfileController::class, 'changePassword'])->name('change-password');
+        Route::post('/profile/photo/update', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
+        Route::post('/profile/password', [ProfileController::class, 'changePassword'])->name('change-password');
     });
 
 Route::middleware(['checkislogin', 'checkrole:3'])
@@ -116,7 +115,6 @@ Route::middleware(['checkislogin', 'checkrole:3'])
         Route::post('/profile/password', [ProfileController::class, 'changePassword'])->name('change-password');
     });
 
-Route::get('404', function ($id) {})->name('404');
 
 // CUSTOMER
 Route::middleware(['checkislogin', 'checkrole:3'])
@@ -134,3 +132,7 @@ Route::middleware(['checkislogin', 'checkrole:3'])
         Route::get('/{reservation}/detail', [BookingController::class, 'detail'])->name('detail');
         Route::put('/{reservation}/cancel', [BookingController::class, 'cancel'])->name('cancel');
     });
+
+Route::get('404', function () {
+    return response()->view('errors.404', [], 404);
+})->name('404');

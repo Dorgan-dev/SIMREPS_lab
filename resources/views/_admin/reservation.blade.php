@@ -15,17 +15,14 @@
         </h1>
 
         <p class="mb-4">Data reservasi pelanggan.</p>
-
         {{-- ================= TABLE ================= --}}
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Reservation Table</h6>
             </div>
-
             <div class="card-body">
                 <div class="table-responsive">
-
-                    <table class="table table-bordered" width="100%">
+                    <table class="custom-table" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -36,7 +33,7 @@
                                 <th>Waktu Selesai</th>
                                 <th>Disetujui Oleh</th>
                                 <th>Status</th>
-                                <th width="220">Aksi</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
 
@@ -51,37 +48,35 @@
                                     <td>{{ $item->waktu_selesai }}</td>
                                     <td>{{ $item->approver->name ?? '-' }}</td>
 
-                                    {{-- ✅ BADGE STATUS --}}
+                                    {{-- Badge Status --}}
                                     <td>
                                         <span
                                             class="badge
-                                        @if ($item->status == 'Dipesan') bg-warning
-                                        @elseif ($item->status == 'Berlangsung') bg-primary
-                                        @elseif ($item->status == 'Dibatalkan') bg-danger
-                                        @else bg-success @endif">
+                                    @if ($item->status == 'Dipesan') bg-warning
+                                    @elseif ($item->status == 'Berlangsung') bg-primary
+                                    @elseif ($item->status == 'Dibatalkan') bg-danger
+                                    @else bg-success @endif">
                                             {{ $item->status }}
                                         </span>
                                     </td>
 
-                                    {{-- ✅ AKSI --}}
+                                    {{-- Actions --}}
                                     <td class="d-flex gap-1">
 
-                                        {{-- ✅ KHUSUS MODE PENGAJUAN --}}
+                                        {{-- Special for "pengajuan" mode --}}
                                         @if ($mode == 'pengajuan')
-                                            <!-- Tombol Terima -->
+                                            <!-- Accept Button -->
                                             <button class="btn btn-success btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#approveModal{{ $item->id }}">
                                                 Terima
                                             </button>
-
-                                            <!-- Tombol Tolak -->
+                                            <!-- Reject Button -->
                                             <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#rejectModal{{ $item->id }}">
                                                 Tolak
                                             </button>
                                         @endif
-
-                                        <!-- Tombol Hapus -->
+                                        <!-- Delete Button -->
                                         <button class="btn btn-dark btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#deleteModal{{ $item->id }}">
                                             Hapus
@@ -90,7 +85,7 @@
                                     </td>
                                 </tr>
 
-                                {{-- ✅ MODAL APPROVE --}}
+                                {{-- Modal Approve --}}
                                 <div class="modal fade" id="approveModal{{ $item->id }}" tabindex="-1">
                                     <div class="modal-dialog">
                                         <form action="{{ route('admin.reservations.approve', $item->id) }}" method="POST">
@@ -113,7 +108,7 @@
                                     </div>
                                 </div>
 
-                                {{-- ✅ MODAL REJECT --}}
+                                {{-- Modal Reject --}}
                                 <div class="modal fade" id="rejectModal{{ $item->id }}" tabindex="-1">
                                     <div class="modal-dialog">
                                         <form action="{{ route('admin.reservations.reject', $item->id) }}" method="POST">
@@ -136,7 +131,7 @@
                                     </div>
                                 </div>
 
-                                {{-- ✅ MODAL HAPUS --}}
+                                {{-- Modal Delete --}}
                                 <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1">
                                     <div class="modal-dialog">
                                         <form action="{{ route('admin.reservations.destroy', $item->id) }}" method="POST">
@@ -165,17 +160,13 @@
                                         </form>
                                     </div>
                                 </div>
-
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center text-muted">
-                                        Tidak ada data reservasi
-                                    </td>
+                                    <td colspan="9" class="text-center text-muted">Tidak ada data reservasi</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>

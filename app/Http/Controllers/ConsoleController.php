@@ -25,7 +25,7 @@ class ConsoleController extends Controller
 
         $auth = Auth::user();
         if ($auth->role != 1) {
-            return view('_reseptionist.console', $console);
+            return view('_receptionist.console', $console);
         }
         return view('_admin.console', $console);
     }

@@ -33,15 +33,25 @@
     </div>
 
     {{-- =============== NOTIFIKASI =============== --}}
-    <div class="modal fade" id="notifModal" tabindex="-1">
+    <div class="modal fade" id="notifModal" tabindex="-1" aria-labelledby="notifModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-lg rounded-3">
-                <div class="modal-header">
-                    <h5 class="modal-title">Notifikasi</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-content shadow-lg rounded-3 border-0">
+                <!-- Header with gradient background -->
+                <div class="modal-header" style="background: linear-gradient(45deg, #ff7e5f, #feb47b); color: white;">
+                    <h5 class="modal-title" id="notifModalLabel">Notifikasi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <p id="notificationMessage" class="mb-0"></p>
+
+                <!-- Body with some padding and better text styling -->
+                <div class="modal-body py-4">
+                    <p id="notificationMessage" class="mb-0" style="font-size: 16px; font-weight: 500;"></p>
+                </div>
+
+                <!-- Footer with optional action button -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
                 </div>
             </div>
         </div>

@@ -13,19 +13,6 @@
                 <span class="icon menu-toggle--gray" aria-hidden="true"></span>
             </button>
 
-            <!-- Language Switcher -->
-            <div class="lang-switcher-wrapper">
-                <button class="lang-switcher transparent-btn" type="button" aria-haspopup="true" aria-expanded="false">
-                    EN
-                    <i data-feather="chevron-down" aria-hidden="true"></i>
-                </button>
-                <ul class="lang-menu dropdown" role="menu">
-                    <li><a href="##" role="menuitem">English</a></li>
-                    <li><a href="##" role="menuitem">French</a></li>
-                    <li><a href="##" role="menuitem">Uzbek</a></li>
-                </ul>
-            </div>
-
             <!-- Theme Switcher -->
             <button class="theme-switcher gray-circle-btn" type="button" title="Switch theme"
                 aria-label="Switch theme">
@@ -96,7 +83,7 @@
                 </button>
                 <ul class="users-item-dropdown nav-user-dropdown dropdown" role="menu">
                     <li>
-                        <a href="{{ route('admin.profile') }}" role="menuitem">
+                        <a href="{{ route('receptionist.profile') }}" role="menuitem">
                             <i data-feather="user" aria-hidden="true"></i>
                             <span>Profile</span>
                         </a>

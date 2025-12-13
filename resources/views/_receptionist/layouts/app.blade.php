@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMREPS | Admin Page</title>
+    <title>SIMREPS | Receptionist Page</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -23,25 +23,35 @@
     <div class="layer"></div>
 
     <div class="page-flex">
-        @include('_reseptionist.layouts.sidebar')
+        @include('_receptionist.layouts.sidebar')
 
         <div class="main-wrapper">
-            @include('_reseptionist.layouts.topbar')
+            @include('_receptionist.layouts.topbar')
             @yield('content')
-            @include('_reseptionist.layouts.footer')
+            @include('_receptionist.layouts.footer')
         </div>
     </div>
 
     {{-- =============== NOTIFIKASI =============== --}}
-    <div class="modal fade" id="notifModal" tabindex="-1">
+    <div class="modal fade" id="notifModal" tabindex="-1" aria-labelledby="notifModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-lg rounded-3">
-                <div class="modal-header">
-                    <h5 class="modal-title">Notifikasi</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-content shadow-lg rounded-3 border-0">
+                <!-- Header with gradient background -->
+                <div class="modal-header" style="background: linear-gradient(45deg, #ff7e5f, #feb47b); color: white;">
+                    <h5 class="modal-title" id="notifModalLabel">Notifikasi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <p id="notificationMessage" class="mb-0"></p>
+
+                <!-- Body with some padding and better text styling -->
+                <div class="modal-body py-4">
+                    <p id="notificationMessage" class="mb-0" style="font-size: 16px; font-weight: 500;"></p>
+                </div>
+
+                <!-- Footer with optional action button -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
                 </div>
             </div>
         </div>
@@ -57,7 +67,7 @@
                     <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
-                <form action="{{ route('admin.change-password') }}" method="POST">
+                <form action="{{ route('receptionist.change-password') }}" method="POST">
                     @csrf
 
                     <div class="modal-body">

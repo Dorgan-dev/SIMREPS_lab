@@ -1,4 +1,4 @@
-@extends('_admin.layouts.app')
+@extends('_receptionist.layouts.app')
 
 @section('content')
     <div class="container py-5">
@@ -27,10 +27,11 @@
                 </h3>
 
                 <!-- Profile Photo Card -->
-                <div class="card shadow-sm mb-4">
+                <div
+                    class="card shadow-sm mb-4 {{ config('app.env') == 'production' ? 'bg-dark text-light border-secondary' : 'bg-white text-dark' }}">
                     <div class="card-body text-center py-5">
                         <div class="position-relative d-inline-block mb-3">
-                            <div class="rounded-circle border border-3 p-2 shadow"
+                            <div class="rounded-circle border border-3 {{ config('app.env') == 'production' ? 'border-secondary' : 'border-light' }} p-2 shadow"
                                 style="width: 150px; height: 150px; overflow: hidden; margin: 0 auto;">
                                 <img src="{{ auth()->user()->profile_photo_url }}" alt="Foto Profil"
                                     class="img-fluid rounded-circle w-100 h-100" style="object-fit: cover;">
@@ -39,7 +40,7 @@
                                 class="btn btn-sm btn-primary rounded-circle position-absolute bottom-0 end-0 shadow-sm"
                                 data-bs-toggle="modal" data-bs-target="#changePhotoModal" style="width: 40px; height: 40px;"
                                 title="Ubah foto profil">
-                                <i data-feather="edit" style="font-size: 18px;"></i>
+                                <i class="bi bi-camera-fill"></i>
                             </button>
                         </div>
                         <h5 class="mt-3 mb-1 fw-bold">{{ auth()->user()->name }}</h5>
@@ -52,11 +53,9 @@
                 <!-- Profile Information Card -->
                 <article class="sign-up">
                     <h1 class="sign-up__title">Informasi Pribadi</h1>
-                    <form action="{{ route('admin.profile.update') }}" method="POST" class="form sign-up-form"
-                        id="profileForm">
+                    <form action="{{ route('receptionist.profile.update') }}" method="POST" class="form sign-up-form">
                         @csrf
 
-                        <!-- Nama Lengkap & Username -->
                         <div class="row">
                             <!-- Nama Lengkap -->
                             <div class="col-md-6">
@@ -65,7 +64,7 @@
                                     <input type="text" name="name"
                                         class="form-input @error('name') is-invalid @enderror"
                                         value="{{ old('name', auth()->user()->name) }}" placeholder="Masukkan nama lengkap"
-                                        data-original="{{ auth()->user()->name }}" required>
+                                        required>
                                     @error('name')
                                         <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
                                     @enderror
@@ -76,20 +75,27 @@
                             <div class="col-md-6">
                                 <label class="form-label-wrapper readonly-field">
                                     <p class="form-label">Username</p>
-                                    <input type="text" class="form-input @error('username') is-invalid @enderror"
+                                    <input type="text" name="username"
+                                        class="form-input @error('username') is-invalid @enderror"
                                         value="{{ auth()->user()->username }}" readonly>
+                                    @error('username')
+                                        <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                                    @enderror
                                 </label>
                             </div>
                         </div>
 
-                        <!-- Email & Nomor Telepon -->
                         <div class="row">
                             <!-- Email (Read-only) -->
                             <div class="col-md-6">
                                 <label class="form-label-wrapper readonly-field">
                                     <p class="form-label">Email</p>
-                                    <input type="email" class="form-input @error('email') is-invalid @enderror"
+                                    <input type="email" name="email"
+                                        class="form-input @error('email') is-invalid @enderror"
                                         value="{{ auth()->user()->email }}" readonly>
+                                    @error('email')
+                                        <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                                    @enderror
                                 </label>
                             </div>
 
@@ -100,7 +106,7 @@
                                     <input type="tel" name="no_hp"
                                         class="form-input @error('no_hp') is-invalid @enderror"
                                         value="{{ old('no_hp', auth()->user()->no_hp) }}"
-                                        placeholder="Contoh: 081234567890" data-original="{{ auth()->user()->no_hp }}">
+                                        placeholder="Contoh: 081234567890" required>
                                     @error('no_hp')
                                         <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
                                     @enderror
@@ -108,15 +114,13 @@
                             </div>
                         </div>
 
-                        <!-- Jenis Kelamin & Role -->
                         <div class="row">
                             <!-- Jenis Kelamin -->
                             <div class="col-md-6">
                                 <label class="form-label-wrapper">
                                     <p class="form-label">Jenis Kelamin</p>
                                     <select name="jenis_kelamin"
-                                        class="form-input @error('jenis_kelamin') is-invalid @enderror"
-                                        data-original="{{ auth()->user()->jenis_kelamin }}" required>
+                                        class="form-input @error('jenis_kelamin') is-invalid @enderror" required>
                                         <option value="" disabled>Pilih Jenis Kelamin</option>
                                         <option value="Laki-laki"
                                             {{ old('jenis_kelamin', auth()->user()->jenis_kelamin) == 'Laki-laki' ? 'selected' : '' }}>
@@ -137,7 +141,7 @@
                             <div class="col-md-6">
                                 <label class="form-label-wrapper readonly-field">
                                     <p class="form-label">Role</p>
-                                    <input type="text" class="form-input"
+                                    <input type="text" name="role" class="form-input"
                                         value="{{ auth()->user()->role == 1 ? 'Admin' : (auth()->user()->role == 2 ? 'Resepsionis' : 'Customer') }}"
                                         readonly>
                                 </label>
@@ -145,20 +149,13 @@
                         </div>
 
                         <!-- Action Buttons -->
-                        <div class="row mt-3">
-                            <!-- Tombol Reset -->
-                            <div class="col-md-6 mb-2 mb-md-0">
-                                <button type="reset" class="form-btn btn-secondary w-100 h-200 btn-lg" id="resetBtn">
-                                    <i class="bi bi-arrow-clockwise me-2"></i>Reset
-                                </button>
-                            </div>
-
-                            <!-- Tombol Submit -->
-                            <div class="col-md-6">
-                                <button type="submit" class="form-btn btn-primary w-100 btn-lg" id="submitBtn" disabled>
-                                    <i class="bi bi-check-circle me-2"></i>Perbarui Data
-                                </button>
-                            </div>
+                        <div class="form-label-wrapper mt-4">
+                            <button type="reset" class="form-btn transparent-btn">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                            </button>
+                            <button type="submit" class="form-btn primary-default-btn">
+                                <i class="bi bi-check-circle me-2"></i>Perbarui Data
+                            </button>
                         </div>
                     </form>
                 </article>
@@ -170,17 +167,22 @@
     <div class="modal fade" id="changePhotoModal" tabindex="-1" aria-labelledby="changePhotoModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form action="{{ route('admin.profile.photo.update') }}" method="POST" enctype="multipart/form-data"
-                    id="photoUploadForm">
+            <div
+                class="modal-content {{ config('app.env') == 'production' ? 'bg-dark text-light' : 'bg-white text-dark' }}">
+                <form action="{{ route('receptionist.profile.photo.update') }}" method="POST"
+                    enctype="multipart/form-data" id="photoUploadForm">
                     @csrf
 
                     <!-- Modal Header -->
-                    <div class="modal-header border-bottom">
+                    <div
+                        class="modal-header border-bottom {{ config('app.env') == 'production' ? 'border-secondary' : '' }}">
                         <h5 class="modal-title fw-bold" id="changePhotoModalLabel">
                             <i class="bi bi-camera-fill me-2"></i>Ubah Foto Profil
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button"
+                            class="btn-close {{ config('app.env') == 'production' ? 'btn-close-white' : '' }}"
+                            data-bs-dismiss="modal" aria-label="Close">
+                        </button>
                     </div>
 
                     <!-- Modal Body -->
@@ -189,8 +191,8 @@
                         <div class="text-center mb-4">
                             <p class="text-muted mb-2 small">Foto profil saat ini:</p>
                             <img id="current-photo" src="{{ auth()->user()->profile_photo_url }}"
-                                class="rounded-circle border shadow-sm"
-                                style="width: 120px; height: 120px; object-fit: cover;" alt="Current Photo">
+                                class="rounded-circle border" style="width: 120px; height: 120px; object-fit: cover;"
+                                alt="Current Photo">
                         </div>
 
                         <!-- File Input -->
@@ -199,140 +201,86 @@
                                 <i class="bi bi-image me-2"></i>Pilih foto baru
                             </label>
                             <input type="file" name="profile_photo" id="profile_photo"
-                                class="form-control @error('profile_photo') is-invalid @enderror"
-                                accept="image/jpeg,image/png,image/jpg,image/webp">
+                                class="form-control @error('profile_photo') is-invalid @enderror {{ config('app.env') == 'production' ? 'bg-dark text-light border-secondary' : '' }}"
+                                accept="image/jpeg,image/png,image/jpg,image/webp" onchange="previewPhoto(event)"
+                                required>
                             @error('profile_photo')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <small class="d-block mt-2 text-secondary">
-                                <i class="bi bi-info-circle me-1"></i>Format: JPG, PNG, WEBP | Maksimal: 5MB
+                            <small class="text-muted d-block mt-2">
+                                <i class="bi bi-info-circle me-1"></i>Format: JPG, PNG, WEBP | Maksimal: 2MB | Min:
+                                100x100px
                             </small>
-                        </div>
-
-                        <!-- Error Message -->
-                        <div id="error-message" class="alert alert-danger d-none" role="alert">
-                            <i class="bi bi-exclamation-circle me-2"></i>
-                            <span id="error-text"></span>
                         </div>
 
                         <!-- Preview Container -->
                         <div id="preview-container" class="text-center d-none mt-4">
                             <p class="text-muted mb-2 small">Preview foto baru:</p>
-                            <img id="photo-preview" class="rounded-circle border border-primary shadow"
+                            <img id="photo-preview" class="rounded-circle border border-primary"
                                 style="width: 120px; height: 120px; object-fit: cover;" alt="Preview">
                         </div>
-
-                        <!-- Delete Photo Option -->
-                        @if (auth()->user()->profile_photo)
-                            <div class="text-center mt-4 pt-3 border-top">
-                                <button type="button" class="btn btn-outline-danger btn-sm" id="deletePhotoBtn">
-                                    <i class="bi bi-trash me-1"></i>Hapus Foto Profil
-                                </button>
-                            </div>
-                        @endif
                     </div>
 
                     <!-- Modal Footer -->
-                    <div class="modal-footer border-top">
+                    <div
+                        class="modal-footer border-top {{ config('app.env') == 'production' ? 'border-secondary' : '' }}">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="bi bi-x-lg me-2"></i>Batal
                         </button>
-                        <button type="submit" class="btn btn-primary" id="submitPhotoBtn" disabled>
-                            <i class="bi bi-upload me-2"></i>Simpan Foto
+                        <button type="submit" class="btn btn-primary" id="submitPhotoBtn">
+                            <i class="bi bi-check-lg me-2"></i>Simpan Foto
                         </button>
                     </div>
-                </form>
-
-                <!-- Hidden Delete Form -->
-                <form id="deletePhotoForm" action="{{ route('admin.profile.photo.delete') }}" method="POST"
-                    class="d-none">
-                    @csrf
-                    @method('DELETE')
                 </form>
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const photoInput = document.getElementById('profile_photo');
+        function previewPhoto(event) {
+            const input = event.target;
             const preview = document.getElementById('photo-preview');
-            const previewContainer = document.getElementById('preview-container');
+            const container = document.getElementById('preview-container');
             const submitBtn = document.getElementById('submitPhotoBtn');
-            const errorMessage = document.getElementById('error-message');
-            const errorText = document.getElementById('error-text');
-            const modal = document.getElementById('changePhotoModal');
-            const photoUploadForm = document.getElementById('photoUploadForm');
-            const deleteBtn = document.getElementById('deletePhotoBtn');
-            const deleteForm = document.getElementById('deletePhotoForm');
 
-            // Handle file input change
-            if (photoInput) {
-                photoInput.addEventListener('change', function(event) {
-                    const file = event.target.files[0];
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
 
-                    // Reset states
-                    errorMessage.classList.add('d-none');
-                    errorText.textContent = '';
-                    previewContainer.classList.add('d-none');
-                    submitBtn.disabled = true;
+                // Validate file size
+                if (file.size > 2048000) {
+                    alert('Ukuran file terlalu besar! Maksimal 2MB');
+                    input.value = '';
+                    container.classList.add('d-none');
+                    return;
+                }
 
-                    if (file) {
-                        // Validate file type
-                        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-                        if (!allowedTypes.includes(file.type)) {
-                            errorText.textContent = 'Format file tidak valid! Gunakan JPG, PNG, atau WEBP';
-                            errorMessage.classList.remove('d-none');
-                            photoInput.value = '';
-                            return;
-                        }
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Format file tidak valid! Gunakan JPG, PNG, atau WEBP');
+                    input.value = '';
+                    container.classList.add('d-none');
+                    return;
+                }
 
-                        // Validate file size (max 5MB)
-                        if (file.size > 5 * 1024 * 1024) {
-                            errorText.textContent = 'Ukuran file terlalu besar! Maksimal 5MB';
-                            errorMessage.classList.remove('d-none');
-                            photoInput.value = '';
-                            return;
-                        }
-
-                        // Show preview
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            preview.src = e.target.result;
-                            previewContainer.classList.remove('d-none');
-                            submitBtn.disabled = false;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
+                // Preview image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    container.classList.remove('d-none');
+                    submitBtn.disabled = false;
+                }
+                reader.readAsDataURL(file);
+            } else {
+                container.classList.add('d-none');
+                submitBtn.disabled = true;
             }
+        }
 
-            // Handle delete photo button
-            if (deleteBtn) {
-                deleteBtn.addEventListener('click', function() {
-                    if (confirm('Yakin ingin menghapus foto profil?')) {
-                        deleteForm.submit();
-                    }
-                });
-            }
-
-            // Reset modal on close
-            if (modal) {
-                modal.addEventListener('hidden.bs.modal', function() {
-                    // Reset form
-                    photoUploadForm.reset();
-
-                    // Hide preview and error
-                    previewContainer.classList.add('d-none');
-                    errorMessage.classList.add('d-none');
-
-                    // Disable submit button
-                    submitBtn.disabled = true;
-
-                    // Clear error text
-                    errorText.textContent = '';
-                });
-            }
+        // Reset modal on close
+        document.getElementById('changePhotoModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('photoUploadForm').reset();
+            document.getElementById('preview-container').classList.add('d-none');
         });
     </script>
 
@@ -354,7 +302,7 @@
 
         .readonly-field:hover input {
             cursor: not-allowed;
-            background-color: #666666 !important;
+            background-color: #444444 !important;
             opacity: 0.7;
         }
 

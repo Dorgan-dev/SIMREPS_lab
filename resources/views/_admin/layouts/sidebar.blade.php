@@ -27,27 +27,36 @@
         <div class="sidebar-body">
             <a href="{{ route('admin.profile') }}" class="sidebar-user">
                 <span class="sidebar-user-img">
-                    <img id="current-photo" src="{{ auth()->user()->profile_photo_url }}" class="rounded-circle border"
+                    <img src="{{ auth()->user()->profile_photo_url }}" class="rounded-circle border"
                         style="width: 48px; height: 48px; object-fit: cover;" alt="Current">
                 </span>
-                <div class="sidebar-user-info">
-                    <span class="sidebar-user__title">{{ Auth::user()->name }}</span>
-                    <span class="sidebar-user__subtitle">
+                <div class="sidebar-user-info" style="flex: 1; min-width: 0;">
+                    <span class="pt-2 sidebar-user__title"
+                        style="display: block;
+                               white-space: nowrap;
+                               overflow: hidden;
+                               text-overflow: ellipsis;
+                               font-weight: 600;">
+                        {{ Auth::user()->name }}
+                    </span>
+                    <span class="pt-1 sidebar-user__subtitle">
                         {{ Auth::user()->role == 1 ? 'Administrator' : (Auth::user()->role == 2 ? 'Resepsionis' : 'Pelanggan') }}
                     </span>
                 </div>
             </a>
+
             <ul class="sidebar-body-menu">
                 <!-- Dashboard -->
                 <li>
-                    <a class="{{ Request::routeIs('admin') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                    <a class="{{ Request::routeIs('admin.dashboard') ? 'active' : '' }}"
+                        href="{{ route('admin.dashboard') }}">
                         <span class="icon home" aria-hidden="true"></span> Dashboard
                     </a>
                 </li>
 
                 <!-- Bookings Data -->
                 <li>
-                    <a class="show-cat-btn {{ Request::routeIs('reservations.index*') || Request::routeIs('') || Request::routeIs('admin.history*') ? 'active' : '' }}"
+                    <a class="show-cat-btn {{ Request::routeIs('admin.reservations.*') ? 'active' : '' }}"
                         href="##">
                         <span class="icon document" aria-hidden="true"></span> Data Pemesanan
                         <span class="category__btn transparent-btn" title="Open list">
@@ -57,19 +66,22 @@
                     </a>
                     <ul class="cat-sub-menu">
                         <li class="nav-item">
-                            <a href="{{ route('admin.reservations.pending') }}" class="nav-link">
+                            <a href="{{ route('admin.reservations.pending') }}"
+                                class="{{ Request::routeIs('admin.reservations.pending') ? 'active' : '' }}">
                                 <i class="bi bi-inbox"></i> Pengajuan
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('admin.reservations.ongoing') }}" class="nav-link">
+                            <a href="{{ route('admin.reservations.index') }}"
+                                class="{{ Request::routeIs('admin.reservations.index') ? 'active' : '' }}">
                                 <i class="bi bi-play-circle"></i> Sedang Berjalan
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('admin.reservations.history') }}" class="nav-link">
+                            <a href="{{ route('admin.reservations.history') }}"
+                                class="{{ Request::routeIs('admin.reservations.history') ? 'active' : '' }}">
                                 <i class="bi bi-clock-history"></i> Riwayat Pesanan
                             </a>
                         </li>
@@ -78,7 +90,7 @@
 
                 <!-- Users -->
                 <li>
-                    <a class="show-cat-btn {{ Request::routeIs('customers.index*') || Request::routeIs('admin.staff*') ? 'active' : '' }}"
+                    <a class="show-cat-btn {{ Request::routeIs('admin.customers.*') || Request::routeIs('admin.staff.*') ? 'active' : '' }}"
                         href="##">
                         <span class="icon user-3" aria-hidden="true"></span> Pengguna
                         <span class="category__btn transparent-btn" title="Open list">
@@ -89,20 +101,18 @@
                     <ul class="cat-sub-menu">
                         <li>
                             <a href="{{ route('admin.customers.index') }}"
-                                class="{{ Request::routeIs('customers.index*') ? 'active' : '' }}">Pelanggan
-                            </a>
+                                class="{{ Request::routeIs('admin.customers.*') ? 'active' : '' }}">Pelanggan</a>
                         </li>
                         <li>
                             <a href="{{ route('admin.staff.index') }}"
-                                class="{{ Request::routeIs('admin.staff*') ? 'active' : '' }}">Staf
-                            </a>
+                                class="{{ Request::routeIs('admin.staff.*') ? 'active' : '' }}">Staf</a>
                         </li>
                     </ul>
                 </li>
 
                 <!-- Consoles -->
                 <li>
-                    <a class="{{ Request::routeIs('console.*') ? 'active' : '' }}"
+                    <a class="{{ Request::routeIs('admin.consoles.*') ? 'active' : '' }}"
                         href="{{ route('admin.consoles.index') }}">
                         <span class="icon fas fa-cogs" aria-hidden="true"></span> Konsol
                     </a>
@@ -110,7 +120,7 @@
 
                 <!-- Rooms -->
                 <li>
-                    <a class="{{ Request::routeIs('admin.room*') ? 'active' : '' }}"
+                    <a class="{{ Request::routeIs('admin.rooms.*') ? 'active' : '' }}"
                         href="{{ route('admin.rooms.index') }}">
                         <span class="icon fas fa-door-open" aria-hidden="true"></span> Ruangan
                     </a>
@@ -122,7 +132,7 @@
                 <!-- Settings -->
                 <li>
                     <a href="{{ route('admin.settings.index') }}"
-                        class="{{ Request::routeIs('settings.*') ? 'active' : '' }}">
+                        class="{{ Request::routeIs('admin.settings.*') ? 'active' : '' }}">
                         <span class="icon setting" aria-hidden="true"></span> Pengaturan
                     </a>
                 </li>

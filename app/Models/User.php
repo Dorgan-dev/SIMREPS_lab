@@ -19,6 +19,8 @@ class User extends Authenticatable
         'no_hp',
         'role',
         'password',
+        'google_id',
+        'password_set',
     ];
 
     protected $hidden = [
@@ -31,6 +33,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'password_set' => 'boolean',
         ];
     }
 
@@ -44,8 +47,7 @@ class User extends Authenticatable
             return asset('storage/' . $this->profile_photo);
         }
 
-        // Gunakan UI Avatars sebagai fallback
-        $name = urlencode($this->name);
+        $name = urlencode($this->name); // Gunakan UI Avatars sebagai fallback
         $bg = $this->jenis_kelamin === 'Perempuan' ? 'FF69B4' : '3498db';
         return "https://ui-avatars.com/api/?name={$name}&background={$bg}&color=fff&size=200";
     }
@@ -67,7 +69,7 @@ class User extends Authenticatable
         return (int) $this->role === 1;
     }
 
-    public function isResepsionist(): bool
+    public function isReceptionist(): bool
     {
         return (int) $this->role === 2;
     }

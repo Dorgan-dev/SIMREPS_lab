@@ -16,7 +16,7 @@ class RoomController extends Controller
         $auth = Auth::user();
         $data = Room::paginate(10);
         if ($auth->role != 1) {
-            return view('_reseptionist.room', compact('data'));
+            return view('_receptionist.room', compact('data'));
         }
         return view('_admin.room', compact('data'));
     }

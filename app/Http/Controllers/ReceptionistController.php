@@ -11,7 +11,7 @@ use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class ReseptionistController extends Controller
+class ReceptionistController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -108,7 +108,7 @@ class ReseptionistController extends Controller
         // =====================================================
         // 10. RETURN KE VIEW
         // =====================================================
-        return view('_reseptionist.index', compact(
+        return view('_receptionist.index', compact(
             'totalPS',
             'availablePS',
             'bookedRoomsPercent',
@@ -159,7 +159,7 @@ class ReseptionistController extends Controller
 
         return [$labels, $data];
     }
-    
+
     /**
      * Show the form for creating a new resource.
      */

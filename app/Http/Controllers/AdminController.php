@@ -176,7 +176,7 @@ class AdminController extends Controller
 
     public function resep()
     {
-        return view('_reseptionist.index');
+        return view('_receptionist.index');
     }
 
     /**

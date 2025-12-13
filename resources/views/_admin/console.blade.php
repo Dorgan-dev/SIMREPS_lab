@@ -29,12 +29,11 @@
             </div>
 
             <div class="card-body">
-
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead class="table-primary">
+                    <table class="custom-table" width="100%" cellspacing="0">
+                        <thead>
                             <tr>
-                                <th style="width: 50px;">No</th>
+                                <th>No</th>
                                 <th>Ruangan</th>
                                 <th>Console ID</th>
                                 <th>Nama Konsol</th>
@@ -42,36 +41,39 @@
                                 <th>Kategori</th>
                                 <th>Harga/Jam</th>
                                 <th>Status</th>
-                                <th style="width: 150px;">Aksi</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($data as $index => $item)
+                            @forelse ($data as $i => $item)
                                 <tr>
-                                    <td>{{ ($data->currentPage() - 1) * $data->perPage() + $index + 1 }}</td>
+                                    <td>{{ ($data->currentPage() - 1) * $data->perPage() + $i + 1 }}</td>
                                     <td>{{ optional($item->room)->name ?? '—' }}</td>
                                     <td>{{ $item->id }}</td>
                                     <td>{{ $item->nama_unit }}</td>
                                     <td>{{ $item->nomor_unit }}</td>
                                     <td>{{ $item->kategori }}</td>
                                     <td>Rp {{ number_format($item->harga_per_jam, 0, ',', '.') }}</td>
+
+                                    {{-- Badge Status --}}
                                     <td>
                                         <span
                                             class="badge
                                             @if ($item->status == 'Tersedia') bg-success text-white
-                                            @elseif($item->status == 'Dipesan') bg-warning text-dark
-                                            @elseif($item->status == 'Perbaikan') bg-danger text-white
+                                            @elseif ($item->status == 'Dipesan') bg-warning text-dark
+                                            @elseif ($item->status == 'Perbaikan') bg-danger text-white
                                             @else bg-secondary text-white @endif">
                                             {{ $item->status }}
                                         </span>
                                     </td>
+
+                                    {{-- Action --}}
                                     <td>
-                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#editModal{{ $item->id }}">
                                             Edit
                                         </button>
-
-                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#deleteModal{{ $item->id }}">
                                             Hapus
                                         </button>
@@ -81,21 +83,18 @@
                                 {{-- Modal Edit Console --}}
                                 <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1">
                                     <div class="modal-dialog">
-                                        <form action="{{ route('admin.consoles.update', $item->id) }}"
-                                            method="POST">
+                                        <form action="{{ route('admin.consoles.update', $item->id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
-
                                             <div class="modal-content">
                                                 <div class="modal-header bg-warning">
                                                     <h5 class="modal-title">Edit Console</h5>
                                                     <button type="button" class="btn-close"
                                                         data-bs-dismiss="modal"></button>
                                                 </div>
-
                                                 <div class="modal-body">
-                                                    <div class="mb-2">
-                                                        <label>Ruangan</label>
+                                                    <div class="mb-3">
+                                                        <label for="room_id" class="form-label">Ruangan</label>
                                                         <select name="room_id" class="form-select" required>
                                                             <option value="">Pilih Ruangan</option>
                                                             @foreach ($rooms as $room)
@@ -106,21 +105,18 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
-
-                                                    <div class="mb-2">
-                                                        <label>Nama Konsol</label>
+                                                    <div class="mb-3">
+                                                        <label for="nama_unit" class="form-label">Nama Konsol</label>
                                                         <input type="text" class="form-control" name="nama_unit"
                                                             value="{{ $item->nama_unit }}" required>
                                                     </div>
-
-                                                    <div class="mb-2">
-                                                        <label>Serial Number</label>
+                                                    <div class="mb-3">
+                                                        <label for="nomor_unit" class="form-label">Serial Number</label>
                                                         <input type="text" class="form-control" name="nomor_unit"
                                                             value="{{ $item->nomor_unit }}" required>
                                                     </div>
-
-                                                    <div class="mb-2">
-                                                        <label>Kategori</label>
+                                                    <div class="mb-3">
+                                                        <label for="kategori" class="form-label">Kategori</label>
                                                         <select name="kategori" class="form-select">
                                                             <option value="PS 3"
                                                                 {{ $item->kategori == 'PS 3' ? 'selected' : '' }}>PS3
@@ -133,15 +129,13 @@
                                                             </option>
                                                         </select>
                                                     </div>
-
-                                                    <div class="mb-2">
-                                                        <label>Harga per Jam</label>
+                                                    <div class="mb-3">
+                                                        <label for="harga_per_jam" class="form-label">Harga per Jam</label>
                                                         <input type="number" class="form-control" name="harga_per_jam"
                                                             value="{{ $item->harga_per_jam }}" required>
                                                     </div>
-
-                                                    <div class="mb-2">
-                                                        <label>Status</label>
+                                                    <div class="mb-3">
+                                                        <label for="status" class="form-label">Status</label>
                                                         <select name="status" class="form-select">
                                                             <option value="Tersedia"
                                                                 {{ $item->status == 'Tersedia' ? 'selected' : '' }}>
@@ -155,7 +149,6 @@
                                                         </select>
                                                     </div>
                                                 </div>
-
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Tutup</button>
@@ -169,22 +162,18 @@
                                 {{-- Modal Delete Console --}}
                                 <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1">
                                     <div class="modal-dialog">
-                                        <form action="{{ route('admin.consoles.destroy', $item->id) }}"
-                                            method="POST">
+                                        <form action="{{ route('admin.consoles.destroy', $item->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-
                                             <div class="modal-content">
                                                 <div class="modal-header bg-danger text-white">
                                                     <h5 class="modal-title">Hapus Console</h5>
                                                     <button type="button" class="btn-close btn-close-white"
                                                         data-bs-dismiss="modal"></button>
                                                 </div>
-
                                                 <div class="modal-body">
-                                                    <p>Yakin ingin menghapus console <b>{{ $item->nama_konsol }}</b>?</p>
+                                                    <p>Yakin ingin menghapus console <b>{{ $item->nama_unit }}</b>?</p>
                                                 </div>
-
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Batal</button>
@@ -194,7 +183,6 @@
                                         </form>
                                     </div>
                                 </div>
-
                             @empty
                                 <tr>
                                     <td colspan="9" class="text-center text-muted">Belum ada data console.</td>
@@ -202,7 +190,6 @@
                             @endforelse
                         </tbody>
                     </table>
-
                     <!-- Pagination -->
                     <div class="mt-3">
                         {{ $data->links('pagination::bootstrap-5') }}

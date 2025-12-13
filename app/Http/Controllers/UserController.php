@@ -14,7 +14,7 @@ class UserController extends Controller
         $auth = Auth::user();
         $user = User::where('role', 3)->get();
         if ($auth->role != 1) {
-            return view('_reseptionist.user', compact('user'));
+            return view('_receptionist.user', compact('user'));
         }
         return view('_admin.user', compact('user'));
     }

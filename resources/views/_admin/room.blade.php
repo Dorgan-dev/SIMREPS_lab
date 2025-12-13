@@ -30,136 +30,121 @@
                 </div>
             </div>
 
-            <div class="card-body">
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="custom-table" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Ruangan</th>
+                    <th>Kategori</th>
+                    <th>Deskripsi</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
 
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead class="table-primary">
-                            <tr>
-                                <th width="50">No</th>
-                                <th>Nama Ruangan</th>
-                                <th>Kategori</th>
-                                <th>Deskripsi</th>
-                                <th width="150">Aksi</th>
-                            </tr>
-                        </thead>
+            <tbody>
+                @forelse ($data as $i => $item)
+                    <tr>
+                        <td>{{ ($data->currentPage() - 1) * $data->perPage() + $i + 1 }}</td>
+                        <td>{{ $item->name }}</td>
+                        <td>{{ $item->category ?? '-' }}</td>
+                        <td>{{ Str::limit($item->description, 80) }}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}">
+                                Edit
+                            </button>
 
-                        <tbody>
-                            @forelse ($data as $index => $item)
-                                <tr>
-                                    <td>{{ ($data->currentPage() - 1) * $data->perPage() + $index + 1 }}</td>
-                                    <td>{{ $item->name }}</td>
-                                    <td>{{ $item->category ?? '-' }}</td>
-                                    <td>{{ Str::limit($item->description, 80) }}</td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#editModal{{ $item->id }}">
-                                            Edit
-                                        </button>
+                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $item->id }}">
+                                Hapus
+                            </button>
+                        </td>
+                    </tr>
 
-                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal{{ $item->id }}">
-                                            Hapus
-                                        </button>
-                                    </td>
-                                </tr>
+                    {{-- Modal Edit --}}
+                    <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <form action="{{ route('admin.rooms.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('POST')
 
-                                {{-- Modal Edit --}}
-                                <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1">
-                                    <div class="modal-dialog">
-                                        <form action="{{ route('admin.rooms.update', $item->id) }}" method="POST"
-                                            enctype="multipart/form-data">
-                                            @csrf
-                                            @method('POST')
+                                <div class="modal-content">
+                                    <div class="modal-header bg-warning">
+                                        <h5 class="modal-title">Edit Ruangan</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
 
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-warning">
-                                                    <h5 class="modal-title">Edit Ruangan</h5>
-                                                    <button type="button" class="btn-close"
-                                                        data-bs-dismiss="modal"></button>
-                                                </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Nama Ruangan</label>
+                                            <input type="text" class="form-control" name="name" value="{{ $item->name }}" required>
+                                        </div>
 
-                                                <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="category" class="form-label">Kategori</label>
+                                            <select name="category" class="form-select">
+                                                <option value="">-- Tidak Ada --</option>
+                                                <option value="Premium" {{ $item->category == 'Premium' ? 'selected' : '' }}>Premium</option>
+                                                <option value="VIP" {{ $item->category == 'VIP' ? 'selected' : '' }}>VIP</option>
+                                                <option value="Standard" {{ $item->category == 'Standard' ? 'selected' : '' }}>Standard</option>
+                                            </select>
+                                        </div>
 
-                                                    <div class="mb-2">
-                                                        <label>Nama Ruangan</label>
-                                                        <input type="text" class="form-control" name="name"
-                                                            value="{{ $item->name }}" required>
-                                                    </div>
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Deskripsi</label>
+                                            <textarea name="description" class="form-control" rows="3">{{ $item->description }}</textarea>
+                                        </div>
+                                    </div>
 
-                                                    <div class="mb-2">
-                                                        <label>Kategori</label>
-                                                        <select name="category" class="form-select">
-                                                            <option value="">-- Tidak Ada --</option>
-                                                            <option value="Premium"
-                                                                {{ $item->category == 'Premium' ? 'selected' : '' }}>
-                                                                Premium</option>
-                                                            <option value="VIP"
-                                                                {{ $item->category == 'VIP' ? 'selected' : '' }}>VIP
-                                                            </option>
-                                                            <option value="Standard"
-                                                                {{ $item->category == 'Standard' ? 'selected' : '' }}>
-                                                                Standard</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="mb-2">
-                                                        <label>Deskripsi</label>
-                                                        <textarea name="description" class="form-control" rows="3">{{ $item->description }}</textarea>
-                                                    </div>
-                                                </div>
-
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Tutup</button>
-                                                    <button type="submit" class="btn btn-warning">Update</button>
-                                                </div>
-                                            </div>
-                                        </form>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                        <button type="submit" class="btn btn-warning">Update</button>
                                     </div>
                                 </div>
-
-                                {{-- Modal Delete --}}
-                                <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1">
-                                    <div class="modal-dialog">
-                                        <form action="{{ route('admin.rooms.destroy', $item->id) }}" method="POST">
-                                            @csrf
-                                            @method('POST')
-
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title">Hapus Ruangan</h5>
-                                                    <button type="button" class="btn-close btn-close-white"
-                                                        data-bs-dismiss="modal"></button>
-                                                </div>
-
-                                                <div class="modal-body">
-                                                    <p>Yakin ingin menghapus ruangan <b>{{ $item->name }}</b>?</p>
-                                                </div>
-
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Batal</button>
-                                                    <button type="submit" class="btn btn-danger">Hapus</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="text-center text-muted">Belum ada data ruangan.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-
-                    <div class="mt-3">
-                        {{ $data->links('pagination::bootstrap-5') }}
+                            </form>
+                        </div>
                     </div>
-                </div>
-            </div>
+
+                    {{-- Modal Delete --}}
+                    <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <form action="{{ route('admin.rooms.destroy', $item->id) }}" method="POST">
+                                @csrf
+                                @method('POST')
+
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger text-white">
+                                        <h5 class="modal-title">Hapus Ruangan</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <p>Yakin ingin menghapus ruangan <b>{{ $item->name }}</b>?</p>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-danger">Hapus</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">Belum ada data ruangan.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+
+        <div class="mt-3">
+            {{ $data->links('pagination::bootstrap-5') }}
+        </div>
+    </div>
+</div>
+
         </div>
 
         {{-- Modal Tambah --}}

@@ -1,12 +1,10 @@
 <?php
-// app/Http/Controllers/Admin/ProfileController.php
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,19 +17,12 @@ class ProfileController extends Controller
     {
         $role = Auth::user()->role;
 
-        switch ($role) {
-            case 1: // Admin
-                return view('_admin.profile');
-
-            case 2: // Resepsionist
-                return view('_resepsionist.profile');
-
-            case 3: // Customer
-                return view('_customer.profile');
-
-            default:
-                abort(403, 'Unauthorized');
-        }
+        return view(match ($role) {
+            1 => '_admin.profile',
+            2 => '_receptionist.profile',
+            3 => '_customer.profile',
+            default => abort(403),
+        });
     }
 
     /**
@@ -44,19 +35,16 @@ class ProfileController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'no_hp' => 'nullable|string|max:20',
+            'no_hp' => 'required|string|max:15',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
         ]);
 
-        $user->name = $request->input('name');
-        $user->username = $request->input('username');
-        $user->email = $request->input('email');
-        $user->no_hp = $request->input('no_hp');
-        $user->jenis_kelamin = $request->input('jenis_kelamin');
+        $user->update([
+            'name' => $request->name,
+            'no_hp' => $request->no_hp,
+            'jenis_kelamin' => $request->jenis_kelamin,
+        ]);
 
-        $user->save();
 
         return redirect()->back()->with('success', 'Profil berhasil diperbarui!');
     }
@@ -66,42 +54,34 @@ class ProfileController extends Controller
      */
     public function updatePhoto(Request $request)
     {
-        // 1. VALIDASI FILE
-        $request->validate([
+        $request->validate([ // Validasi foto
             'profile_photo' => [
                 'required',
                 'image',
                 'mimes:jpeg,png,jpg,webp',
-                'max:2048', // 2MB
-                'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000'
+                'max:5120', // 5MB
+                'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000',
             ]
         ], [
             'profile_photo.required' => 'Silakan pilih foto terlebih dahulu',
             'profile_photo.image' => 'File harus berupa gambar',
             'profile_photo.mimes' => 'Format foto harus JPEG, PNG, JPG, atau WEBP',
-            'profile_photo.max' => 'Ukuran foto maksimal 2MB',
+            'profile_photo.max' => 'Ukuran foto maksimal 5MB',
             'profile_photo.dimensions' => 'Dimensi foto minimal 100x100px dan maksimal 4000x4000px',
         ]);
 
         $auth = Auth::user();
-        $user = User::findOrfail($auth->id);
+        $user = User::findOrFail($auth->id);
 
         try {
-            // 2. HAPUS FOTO LAMA (jika ada)
-            $user->deleteOldProfilePhoto();
+            $user->deleteOldProfilePhoto(); // Hapus foto lama jika ada
 
-            // 3. SIMPAN FOTO BARU
-            $file = $request->file('profile_photo');
-
-            // Generate nama file unik: user_1_1701234567.jpg
+            $file = $request->file('profile_photo'); // Simpan foto baru
             $fileName = 'user_' . $user->id . '_' . time() . '.' . $file->extension();
-
-            // Simpan ke storage/app/public/profile_photos/
             $path = $file->storeAs('profile_photos', $fileName, 'public');
 
-            // 4. UPDATE DATABASE
-            $user->update([
-                'profile_photo' => $path
+            $user->update([ // Update database dengan path foto baru
+                'profile_photo' => $path,
             ]);
 
             return redirect()->back()->with('success', 'Foto profil berhasil diperbarui! 🎉');
@@ -116,15 +96,13 @@ class ProfileController extends Controller
     public function deletePhoto()
     {
         $auth = Auth::user();
-        $user = User::findOrfail($auth->id);
+        $user = User::findOrFail($auth->id);
 
         try {
-            // Hapus file dari storage
-            $user->deleteOldProfilePhoto();
+            $user->deleteOldProfilePhoto(); // Hapus foto lama dari penyimpanan
 
-            // Update database (set null)
-            $user->update([
-                'profile_photo' => null
+            $user->update([ // Set foto profil di database menjadi null
+                'profile_photo' => null,
             ]);
 
             return redirect()->back()->with('success', 'Foto profil berhasil dihapus! Kembali ke avatar default.');
@@ -134,21 +112,18 @@ class ProfileController extends Controller
     }
 
     /**
-     * GANTI PASSWORD
+     * Ganti password
      */
     public function changePassword(Request $request)
     {
         $auth = Auth::user();
         $user = User::findOrFail($auth->id);
 
-        // Validasi password baru dulu
-        $request->validate([
-            'new_password' => 'required|min:6|confirmed',
+        $request->validate([ // Validasi password baru
+            'new_password' => 'required|min:8|confirmed',
         ]);
 
-        // CASE 1 : USER GOOGLE & BELUM PERNAH SET PASSWORD
-        if ($user->google_id && !$user->password_set) {
-
+        if ($user->google_id && !$user->password_set) { // CASE 1: USER GOOGLE & BELUM PERNAH SET PASSWORD
             $user->update([
                 'password' => Hash::make($request->new_password),
                 'password_set' => 1,
@@ -157,18 +132,17 @@ class ProfileController extends Controller
             return back()->with('success', 'Password berhasil dibuat!');
         }
 
-        // CASE 2 : USER BIASA ATAU USER GOOGLE YANG SUDAH SET PASSWORD
-        $request->validate([
+        $request->validate([ // CASE 2: USER BIASA ATAU USER GOOGLE YANG SUDAH SET PASSWORD
             'current_password' => 'required',
         ]);
 
-        if (!Hash::check($request->current_password, $user->password)) {
+        if (!Hash::check($request->current_password, $user->password)) { // Validasi password lama
             return back()->withErrors([
                 'current_password' => 'Password lama salah!',
             ]);
         }
 
-        $user->update([
+        $user->update([ // Update password baru
             'password' => Hash::make($request->new_password),
             'password_set' => 1,
         ]);

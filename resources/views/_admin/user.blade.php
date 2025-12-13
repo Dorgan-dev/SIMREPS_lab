@@ -33,7 +33,6 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-
                         {{-- TABLE BODY --}}
                         <tbody>
                             @forelse ($user as $item => $data)
