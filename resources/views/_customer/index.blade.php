@@ -100,7 +100,7 @@
             @else
                 <div class="card">
                     <div class="py-5 text-center card-body">
-                        <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                        <i class="bi bi-inbox" style="font-size: 4rem; color: #f7f7f7;"></i>
                         <h5 class="mt-3">Tidak Ada Console Tersedia</h5>
                         <p class="text-muted">Mohon maaf, saat ini tidak ada console yang tersedia untuk booking.</p>
                         <a href="{{ route('customer.dashboard') }}" class="mt-3 btn btn-primary">

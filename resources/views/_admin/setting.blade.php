@@ -103,8 +103,6 @@
                                 <button class="btn btn-primary" id="room-upload-btn" disabled>Upload</button>
                             </form>
 
-                            <hr>
-
                             {{-- GALERI --}}
                             <div class="row">
                                 @foreach ($roomImages as $img)

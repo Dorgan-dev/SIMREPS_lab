@@ -34,8 +34,6 @@ class ReservationController extends Controller
         $now = now();
         $reservations = Reservation::with('console.room')
             ->whereIn('status', ['Berlangsung', 'Diterima'])
-            ->where('waktu_selesai', '>', $now)
-            ->orderBy('waktu_mulai')
             ->get();
 
         // Tentukan mode berdasarkan role

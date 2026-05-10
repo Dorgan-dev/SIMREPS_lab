@@ -1,13 +1,12 @@
 <footer class="footer">
     <div class="container footer--flex">
         <div class="footer-start">
-            <p>2021 © Elegant Dashboard - <a href="elegant-dashboard.com" target="_blank"
-                    rel="noopener noreferrer">elegant-dashboard.com</a></p>
+            <p>2025 © SIMREPS Dashboard - <a href="/" target="_blank"
+                    rel="noopener noreferrer">simreps.com</a></p>
         </div>
         <ul class="footer-end">
-            <li><a href="##">About</a></li>
-            <li><a href="##">Support</a></li>
-            <li><a href="##">Puchase</a></li>
+            <li><a href="{{ route('home.about')}}">About</a></li>
+            <li><a href="{{ route('home.contact')}}">Support</a></li>
         </ul>
     </div>
 </footer>

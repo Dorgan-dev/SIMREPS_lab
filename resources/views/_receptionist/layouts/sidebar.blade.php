@@ -68,8 +68,8 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('receptionist.reservations.ongoing') }}"
-                                class="{{ Request::routeIs('receptionist.reservations.ongoing') ? 'active' : '' }}">
+                            <a href="{{ route('receptionist.reservations.index') }}"
+                                class="{{ Request::routeIs('receptionist.reservations.index') ? 'active' : '' }}">
                                 <i class="bi bi-play-circle"></i> Sedang Berjalan
                             </a>
                         </li>

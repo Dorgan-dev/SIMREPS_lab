@@ -255,10 +255,43 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            /* =====================
+               PROFILE FORM LOGIC
+            ===================== */
+            const form = document.getElementById('profileForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const inputs = form.querySelectorAll('[data-original]');
+
+            function checkChanges() {
+                let changed = false;
+
+                inputs.forEach(input => {
+                    if (input.value !== input.dataset.original) {
+                        changed = true;
+                    }
+                });
+
+                submitBtn.disabled = !changed;
+            }
+
+            inputs.forEach(input => {
+                input.addEventListener('input', checkChanges);
+                input.addEventListener('change', checkChanges);
+            });
+
+            form.addEventListener('reset', () => {
+                setTimeout(() => submitBtn.disabled = true, 0);
+            });
+
+
+            /* =====================
+               PHOTO UPLOAD LOGIC
+            ===================== */
             const photoInput = document.getElementById('profile_photo');
             const preview = document.getElementById('photo-preview');
             const previewContainer = document.getElementById('preview-container');
-            const submitBtn = document.getElementById('submitPhotoBtn');
+            const submitPhotoBtn = document.getElementById('submitPhotoBtn');
             const errorMessage = document.getElementById('error-message');
             const errorText = document.getElementById('error-text');
             const modal = document.getElementById('changePhotoModal');
@@ -266,73 +299,50 @@
             const deleteBtn = document.getElementById('deletePhotoBtn');
             const deleteForm = document.getElementById('deletePhotoForm');
 
-            // Handle file input change
             if (photoInput) {
-                photoInput.addEventListener('change', function(event) {
-                    const file = event.target.files[0];
-
-                    // Reset states
+                photoInput.addEventListener('change', function() {
+                    const file = this.files[0];
                     errorMessage.classList.add('d-none');
-                    errorText.textContent = '';
                     previewContainer.classList.add('d-none');
-                    submitBtn.disabled = true;
+                    submitPhotoBtn.disabled = true;
 
-                    if (file) {
-                        // Validate file type
-                        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-                        if (!allowedTypes.includes(file.type)) {
-                            errorText.textContent = 'Format file tidak valid! Gunakan JPG, PNG, atau WEBP';
-                            errorMessage.classList.remove('d-none');
-                            photoInput.value = '';
-                            return;
-                        }
+                    if (!file) return;
 
-                        // Validate file size (max 5MB)
-                        if (file.size > 5 * 1024 * 1024) {
-                            errorText.textContent = 'Ukuran file terlalu besar! Maksimal 5MB';
-                            errorMessage.classList.remove('d-none');
-                            photoInput.value = '';
-                            return;
-                        }
-
-                        // Show preview
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            preview.src = e.target.result;
-                            previewContainer.classList.remove('d-none');
-                            submitBtn.disabled = false;
-                        };
-                        reader.readAsDataURL(file);
+                    const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+                    if (!allowed.includes(file.type) || file.size > 5 * 1024 * 1024) {
+                        errorText.textContent = 'File tidak valid';
+                        errorMessage.classList.remove('d-none');
+                        this.value = '';
+                        return;
                     }
+
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        preview.src = e.target.result;
+                        previewContainer.classList.remove('d-none');
+                        submitPhotoBtn.disabled = false;
+                    };
+                    reader.readAsDataURL(file);
                 });
             }
 
-            // Handle delete photo button
             if (deleteBtn) {
-                deleteBtn.addEventListener('click', function() {
+                deleteBtn.addEventListener('click', () => {
                     if (confirm('Yakin ingin menghapus foto profil?')) {
                         deleteForm.submit();
                     }
                 });
             }
 
-            // Reset modal on close
             if (modal) {
-                modal.addEventListener('hidden.bs.modal', function() {
-                    // Reset form
+                modal.addEventListener('hidden.bs.modal', () => {
                     photoUploadForm.reset();
-
-                    // Hide preview and error
                     previewContainer.classList.add('d-none');
                     errorMessage.classList.add('d-none');
-
-                    // Disable submit button
-                    submitBtn.disabled = true;
-
-                    // Clear error text
-                    errorText.textContent = '';
+                    submitPhotoBtn.disabled = true;
                 });
             }
+
         });
     </script>
 

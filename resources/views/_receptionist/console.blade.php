@@ -10,7 +10,12 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Console Table</h6>
-
+                <form method="GET" action="{{ route('receptionist.consoles.index') }}">
+                    <div class="search-wrapper">
+                    <i data-feather="search" aria-hidden="true"></i>
+                    <input type="text" placeholder="Cari Consol" required aria-label="Search" value="{{request('Nama Konsol')}}">
+                </div>
+                </form>
                 {{-- Filter Kategori --}}
                 <form method="GET" action="{{ route('receptionist.consoles.index') }}"
                     class="d-flex align-items-center gap-2">

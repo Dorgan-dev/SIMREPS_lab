@@ -56,11 +56,6 @@
                                                 data-bs-target="#editModal{{ $data->id }}">
                                                 Edit
                                             </button>
-                                            {{-- Delete Button --}}
-                                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#deleteModal{{ $data->id }}">
-                                                Hapus
-                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -151,41 +146,6 @@
                                                 </div>
                                             </form>
                                         </div>
-                                    </div>
-                                </div>
-
-                                {{-- Modal Hapus --}}
-                                <div class="modal fade" id="deleteModal{{ $data->id }}" tabindex="-1"
-                                    aria-labelledby="deleteModalLabel{{ $data->id }}" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <form action="{{ route('admin.customers.destroy', $data->id) }}" method="POST">
-                                            @csrf
-                                            @method('POST')
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title">Konfirmasi Hapus Akun</h5>
-                                                    <button type="button" class="btn-close btn-close-white"
-                                                        data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Apakah Anda yakin ingin menghapus akun berikut?</p>
-                                                    <ul class="mb-3">
-                                                        <li><b>ID Akun:</b> {{ $data->id }}</li>
-                                                        <li><b>Nama:</b> {{ $data->name }}</li>
-                                                        <li><b>Jenis Kelamin:</b> {{ $data->jenis_kelamin }}</li>
-                                                        <li><b>Username:</b> {{ $data->username }}</li>
-                                                        <li><b>No HP:</b> {{ $data->no_hp }}</li>
-                                                        <li><b>Email:</b> {{ $data->email }}</li>
-                                                    </ul>
-                                                    <p class="text-danger"><b>Tindakan ini tidak dapat dibatalkan.</b></p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Batal</button>
-                                                    <button type="submit" class="btn btn-danger">Hapus Akun</button>
-                                                </div>
-                                            </div>
-                                        </form>
                                     </div>
                                 </div>
                             @empty

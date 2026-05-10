@@ -24,7 +24,6 @@ Route::get('/consoles', [HomeController::class, 'console'])->name('home.consoles
 Route::get('/reservasi-hari-ini', [ReservationController::class, 'today'])->name('reservation.today');
 Route::get('/reservasi-mendatang', [ReservationController::class, 'upcoming'])->name('reservation.upcoming');
 
-
 Route::get('/auth/google', [AuthenticationController::class, 'redirectToGoogle'])->name('redirect.google');
 Route::get('/auth/google/callback', [AuthenticationController::class, 'handleGoogleCallback'])->name('google.callback');
 
@@ -91,7 +90,6 @@ Route::middleware(['checkislogin', 'checkrole:2'])
         Route::get('/reservations-pending', [ReservationController::class, 'pending'])->name('reservations.pending');
         Route::post('/reservations/{id}/approve', [ReservationController::class, 'approve'])->name('reservations.approve');
         Route::post('/reservations/{id}/reject', [ReservationController::class, 'reject'])->name('reservations.reject');
-        Route::get('/reservations-ongoing', [ReservationController::class, 'running'])->name('reservations.ongoing');
         Route::get('/reservations-history', [ReservationController::class, 'history'])->name('reservations.history');
 
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
